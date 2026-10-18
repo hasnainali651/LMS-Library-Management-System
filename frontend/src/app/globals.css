@@ -1,0 +1,391 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import '../styles/neo-tokens.css';
+
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    --background: 215 25% 98%;
+    --foreground: 222 47% 11%;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--neo-bg);
+    color: var(--neo-text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Themed Tactile Scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--neo-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--neo-shadow-dark);
+    border-radius: var(--neo-r-full);
+    border: 2px solid var(--neo-bg);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--neo-text-3);
+  }
+
+  /* Themed Selection */
+  ::selection {
+    background: rgba(0, 187, 239, 0.22);
+    color: var(--neo-accent);
+  }
+
+  /* Accessible Focus-visible Rings across the entire app */
+  :focus-visible {
+    outline: 2px solid var(--neo-accent-sky);
+    outline-offset: 2px;
+  }
+}
+
+:root {
+  --z-global-status: 60;
+  --z-navigation-progress: 70;
+}
+
+.global-offline-banner {
+  z-index: var(--z-global-status);
+}
+
+.global-navigation-progress {
+  z-index: var(--z-navigation-progress);
+  transition: transform 180ms ease-out;
+}
+
+body:has(.global-offline-banner) {
+  padding-top: 2.5rem;
+}
+
+body:has(.global-offline-banner) .sticky.top-0 {
+  top: 2.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  html, body {
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+    backdrop-filter: none !important;
+    color: black !important;
+    background-color: transparent !important;
+  }
+
+  nav, aside, footer, header.sticky, button, [role="button"],
+  .print-hidden, .global-offline-banner, .global-navigation-progress,
+  .global-search-trigger, .global-search-dialog, [data-rht-toaster] {
+    display: none !important;
+  }
+
+  main, main > *, .overflow-hidden, .overflow-auto, .overflow-x-auto,
+  .overflow-y-auto, .min-h-screen, .h-screen {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+  }
+
+  main {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  table { width: 100% !important; border-collapse: collapse; }
+  thead { display: table-header-group; }
+  tr, figure, img { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+
+  body:has(.fine-receipt-dialog) > :not(:has(.fine-receipt-dialog)),
+  body:has(.fine-receipt-dialog) .fine-receipt-dialog > :not(:has(#fine-printable-area)) {
+    display: none !important;
+  }
+
+  body:has(.fine-receipt-dialog) > :has(.fine-receipt-dialog),
+  .fine-receipt-dialog {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  #fine-printable-area {
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  #fine-printable-area table {
+    table-layout: fixed;
+    overflow-wrap: anywhere;
+  }
+
+  #fine-printable-area th, #fine-printable-area td {
+    padding: 8px !important;
+    border-bottom: 1px solid #cbd5e1;
+  }
+}
+
+/* ==============================================================================
+   NEUMORPHIC UTILITIES (TACTILE SOFT UI WITH SOFT LIGHTS & MINIMAL BORDERS)
+   ============================================================================== */
+
+/* Tactile Raised Containers (No default border; clean soft lighting) */
+.neo-card {
+  background: var(--neo-card);
+  border-radius: var(--neo-r-md);
+  box-shadow: var(--neo-raised);
+  border: 1px solid transparent;
+  transition: var(--neo-transition);
+}
+.neo-card-sm {
+  background: var(--neo-card);
+  border-radius: var(--neo-r-sm);
+  box-shadow: var(--neo-raised-sm);
+  border: 1px solid transparent;
+  transition: var(--neo-transition);
+}
+.neo-card-lg {
+  background: var(--neo-card);
+  border-radius: var(--neo-r-xl);
+  box-shadow: var(--neo-raised-lg);
+  border: 1px solid transparent;
+  transition: var(--neo-transition);
+}
+
+/* Highlighted Container (used ONLY when component needs emphasis) */
+.neo-card-highlight {
+  border: var(--neo-border-highlight) !important;
+}
+
+/* Debossed Inset Wells */
+.neo-inset-well {
+  background: var(--neo-inset-bg);
+  border-radius: var(--neo-r-md);
+  box-shadow: var(--neo-inset);
+  border: 1px solid transparent;
+}
+.neo-inset-well-sm {
+  background: var(--neo-inset-bg);
+  border-radius: var(--neo-r-sm);
+  box-shadow: var(--neo-inset-sm);
+  border: 1px solid transparent;
+}
+
+/* Tactile Buttons */
+.neo-btn {
+  background: var(--neo-card);
+  color: var(--neo-text);
+  border-radius: var(--neo-r-sm);
+  box-shadow: var(--neo-raised-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: var(--neo-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.neo-btn:hover {
+  box-shadow: var(--neo-raised);
+  color: var(--neo-text);
+}
+.neo-btn:active {
+  box-shadow: var(--neo-inset-sm);
+  transform: translateY(1px);
+}
+.neo-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Tactile Accent Button (Soft warm light, zero harsh neon) */
+.neo-btn-accent {
+  background: var(--neo-accent);
+  color: #ffffff;
+  border-radius: var(--neo-r-sm);
+  box-shadow: var(--neo-accent-glow);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: var(--neo-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.neo-btn-accent:hover {
+  background: var(--neo-accent-hover);
+  box-shadow: 0 4px 14px rgba(0, 187, 239, 0.25);
+}
+.neo-btn-accent:active {
+  background: var(--neo-accent-active);
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+.neo-btn-accent:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Tactile Inset Inputs (Only highlight border on focus) */
+.neo-input {
+  background: var(--neo-inset-bg);
+  border-radius: var(--neo-r-sm);
+  box-shadow: var(--neo-inset);
+  border: 1px solid transparent;
+  color: var(--neo-text);
+  font-family: inherit;
+  outline: none;
+  transition: var(--neo-transition-fast);
+}
+.neo-input:focus {
+  border-color: var(--neo-accent-sky);
+  box-shadow: var(--neo-inset), 0 0 0 2px rgba(0, 187, 239, 0.25);
+}
+.neo-input::placeholder {
+  color: var(--neo-text-3);
+  opacity: 1;
+}
+
+/* Tactile Badges & Pills */
+.neo-badge {
+  background: var(--neo-surface);
+  border-radius: var(--neo-r-full);
+  box-shadow: var(--neo-flat);
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: 3px 12px;
+  color: var(--neo-text-2);
+}
+
+.neo-badge-inset {
+  background: var(--neo-inset-bg);
+  border-radius: var(--neo-r-full);
+  box-shadow: var(--neo-inset-sm);
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 12px;
+}
+
+/* Tactile Groove Divider */
+.neo-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--neo-shadow-dark) 25%,
+    var(--neo-shadow-light) 50%,
+    var(--neo-shadow-dark) 75%,
+    transparent 100%
+  );
+  margin-block: 24px;
+}
+
+/* Tactile Switch / Toggle */
+.neo-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.neo-toggle {
+  width: 50px;
+  height: 26px;
+  border-radius: var(--neo-r-full);
+  background: var(--neo-inset-bg);
+  box-shadow: var(--neo-inset-sm);
+  border: 1px solid transparent;
+  position: relative;
+  cursor: pointer;
+  transition: var(--neo-transition-fast);
+}
+.neo-toggle::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--neo-card);
+  box-shadow: var(--neo-raised-sm);
+  border: 1px solid transparent;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: var(--neo-transition-fast);
+}
+.neo-toggle.active {
+  background-color: var(--neo-accent);
+}
+.neo-toggle.active::after {
+  left: 28px;
+  background: #ffffff;
+}
+
+/* Tabular figures for data, counters, stats, and prices */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

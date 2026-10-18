@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Runtime database, uploads, and logs
+/data/db/
+/uploads/
+/logs/
+
+# Test and build output
+coverage/
+dist/
+build/
+*.tsbuildinfo
+
+# Logs and local backup files
+*.log
+npm-debug.log*
+yarn-debug.log*
+*.bak
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Downloaded Redis binaries
+/tools/redis/*.exe
+/tools/redis/*.dll
+/tools/redis/*.pdb

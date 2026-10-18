@@ -1,0 +1,17 @@
+{
+  "name": "library-management-system-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace=backend",
+    "dev": "npm run dev --workspace=backend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "seed": "npm run seed --workspace=backend",
+    "test": "npm run test --workspace=backend"
+  }
+}

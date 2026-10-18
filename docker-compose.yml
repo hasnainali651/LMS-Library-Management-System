@@ -1,0 +1,93 @@
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: lms-mongodb
+    restart: unless-stopped
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand({ping:1}).ok ? 0 : 1)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    logging: *logging
+
+  mongo-init:
+    image: mongo:7.0
+    restart: "no"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    entrypoint: ["mongosh", "--host", "mongodb:27017", "--quiet", "--eval"]
+    command:
+      - >-
+        try { rs.status(); } catch (e) { if (e.code !== 94) throw e; rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}); }
+        let ready = false; for (let i=0;i<60;i++) { if (db.hello().isWritablePrimary) { ready=true; break; } sleep(1000); }
+        if (!ready) throw new Error('Replica-set primary readiness timed out');
+        print('Replica-set primary ready');
+    logging: *logging
+
+  redis:
+    image: redis:7-alpine
+    container_name: lms-redis
+    restart: unless-stopped
+    env_file:
+      - path: .env.docker.local
+        format: raw
+    command: ["sh", "-c", "exec /usr/local/bin/docker-entrypoint.sh redis-server --appendonly yes --maxmemory-policy noeviction --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: *logging
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: lms-backend
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 90s
+    env_file:
+      - path: backend/.env
+        format: raw
+      - path: .env.docker.local
+        format: raw
+    environment:
+      NODE_ENV: development
+      PORT: "5000"
+      MONGO_URI: mongodb://mongodb:27017/lms_db?replicaSet=rs0
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-5000}:5000"
+    volumes:
+      - backend_uploads:/app/backend/uploads
+      - backend_logs:/app/backend/logs
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5000/api/v1/health',{signal:AbortSignal.timeout(4000)}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
+    logging: *logging
+
+volumes:
+  mongo_data:
+  redis_data:
+  backend_uploads:
+  backend_logs:
