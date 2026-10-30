@@ -80,7 +80,7 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       {/* Desktop Sidebar Rail */}
-      <aside className="hidden md:flex flex-col w-64 shrink-0 bg-[var(--neo-card)] [box-shadow:var(--neo-raised-sm)] min-h-screen sticky top-0 h-screen select-none z-20 transition-colors">
+      <aside className="hidden md:flex flex-col w-64 shrink-0 bg-[var(--neo-card)] [box-shadow:var(--neo-raised-sm)] h-screen fixed top-0 left-0 select-none z-20 transition-colors">
         {/* Brand Header */}
         <div className="p-6 border-b border-[var(--neo-shadow-dark)]/15 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3 group">

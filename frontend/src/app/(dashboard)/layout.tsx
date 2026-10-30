@@ -3,6 +3,7 @@
 import React from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopNav } from '@/components/layout/TopNav';
+import { VerificationBanner } from '@/components/layout/VerificationBanner';
 import { useSocketEvents } from '@/hooks/useSocketEvents';
 
 function DashboardSocketListener() {
@@ -16,14 +17,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[var(--neo-bg)] text-[var(--neo-text)] flex flex-col md:flex-row transition-colors">
+    <div className="min-h-screen bg-[var(--neo-bg)] text-[var(--neo-text)] transition-colors">
       <DashboardSocketListener />
-      {/* Sidebar: Desktop vertical sticky rail + Mobile bottom fixed nav */}
+      {/* Sidebar: Desktop vertical fixed rail + Mobile bottom fixed nav */}
       <Sidebar />
 
       {/* Main Circulation Console Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-8">
+      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-8 md:pl-64">
         <TopNav />
+        <VerificationBanner />
         <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
           {children}
         </main>
