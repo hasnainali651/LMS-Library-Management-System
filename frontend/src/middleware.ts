@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: covers.openlibrary.org books.google.com images.unsplash.com",
+    "img-src 'self' data: blob: covers.openlibrary.org books.google.com images.unsplash.com res.cloudinary.com lh3.googleusercontent.com graph.facebook.com platform-lookaside.fbsbx.com",
     `connect-src ${Array.from(connectSources).join(' ')}`,
     "object-src 'none'",
     "base-uri 'self'",

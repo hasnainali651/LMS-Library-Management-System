@@ -8,12 +8,19 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  source?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
+  SOURCE?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
   membershipType?: MembershipType;
+  institution?: string;
+  department?: string;
   studentId?: string;
+  interests?: string[];
   avatar?: string;
   phone?: string;
+  memberId?: string;
   maxBorrowLimit?: number;
   isEmailVerified?: boolean;
+  isStaffApproved?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -32,6 +39,20 @@ interface AuthState {
     accessToken?: string;
     refreshToken?: string;
   }) => Promise<{ success: boolean; user?: User; error?: string }>;
+  oauthLogin: (data: {
+    provider: 'GOOGLE' | 'FACEBOOK';
+    email: string;
+    name?: string;
+    avatar?: string;
+    oauthId?: string;
+  }) => Promise<{
+    success: boolean;
+    requiresOnboarding?: boolean;
+    sessionId?: string;
+    profile?: any;
+    user?: User;
+    error?: string;
+  }>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<string | null>;
   updateProfile: (updatedData: Partial<User>) => Promise<void>;
@@ -130,6 +151,46 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: any) {
           set({ isLoading: false });
           const message = error.response?.data?.message || error.message || 'Login failed';
+          return { success: false, error: message };
+        }
+      },
+
+      oauthLogin: async (data) => {
+        set({ isLoading: true });
+        try {
+          const response = await axios.post(`${API_BASE}/auth/oauth`, data);
+          const resData = response.data?.data || response.data;
+
+          if (resData.requiresOnboarding) {
+            set({ isLoading: false });
+            return {
+              success: true,
+              requiresOnboarding: true,
+              sessionId: resData.sessionId,
+              profile: resData.profile,
+            };
+          }
+
+          const user = resData.user;
+          const accessToken = resData.accessToken || resData.tokens?.accessToken;
+          const refreshTokenString = resData.refreshToken || resData.tokens?.refreshToken;
+
+          if (accessToken && user) {
+            setAuthCookies(accessToken, user.role);
+          }
+
+          set({
+            user,
+            accessToken,
+            refreshTokenString,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+
+          return { success: true, requiresOnboarding: false, user };
+        } catch (error: any) {
+          set({ isLoading: false });
+          const message = error.response?.data?.message || error.message || 'Third-party sign-in failed.';
           return { success: false, error: message };
         }
       },

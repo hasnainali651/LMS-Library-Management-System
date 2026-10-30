@@ -253,7 +253,7 @@ function SettingsForms() {
       {activeTab === 'membership' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
               {mTypes.length} membership polic{mTypes.length !== 1 ? 'ies' : 'y'} configured
             </p>
             <Button variant="primary" size="sm" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={openAddModal}>
@@ -267,7 +267,7 @@ function SettingsForms() {
             </div>
           ) : mTypes.length === 0 ? (
             <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-              <p className="text-sm text-slate-500 dark:text-slate-400">No membership policies found.</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">No membership policies found.</p>
               <Button variant="secondary" size="sm" className="mt-3" onClick={openAddModal}>
                 Create Initial Policy
               </Button>
@@ -291,28 +291,28 @@ function SettingsForms() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{mt.displayName}</p>
-                            <span className="font-mono text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-850 px-1.5 py-0.5 rounded">
+                            <span className="font-mono text-[10px] text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">
                               {mt.name}
                             </span>
                             {mt.isActive === false && (
                               <Badge color="gray" className="text-[10px]">Inactive</Badge>
                             )}
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-2 text-xs text-slate-500 dark:text-slate-400">
+                          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-2 text-xs text-slate-600 dark:text-slate-300">
                             <span className="flex items-center gap-1">
-                              <BookOpen className="w-3.5 h-3.5 text-slate-400" /> {mt.maxBooks} books quota
+                              <BookOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {mt.maxBooks} books quota
                             </span>
                             <span className="flex items-center gap-1">
-                              <Clock className="w-3.5 h-3.5 text-slate-400" /> {mt.loanDays} day loan period
+                              <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {mt.loanDays} day loan period
                             </span>
                             <span className="flex items-center gap-1">
-                              <Shield className="w-3.5 h-3.5 text-slate-400" /> {mt.renewalLimit} renewals allowed
+                              <Shield className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {mt.renewalLimit} renewals allowed
                             </span>
                             <span className="flex items-center gap-1">
-                              <CreditCard className="w-3.5 h-3.5 text-slate-400" /> PKR {mt.finePerDay}/day fine
+                              <CreditCard className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> PKR {mt.finePerDay}/day fine
                             </span>
                             <span>Max cap: PKR {mt.maxFinePerBook ?? 500}</span>
-                            <span className={mt.canBorrowReference ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}>
+                            <span className={mt.canBorrowReference ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-slate-500 dark:text-slate-400'}>
                               {mt.canBorrowReference ? '✓ Reference allowed' : '✗ Standard only'}
                             </span>
                           </div>
@@ -321,14 +321,14 @@ function SettingsForms() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => openEditModal(mt)}
-                          className="p-2 rounded-lg text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors"
+                          className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-950/40 transition-colors"
                           title="Edit policy"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeleteTarget(mt)}
-                          className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                          className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                           title="Delete policy"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -366,11 +366,11 @@ function SettingsForms() {
                 </CardHeader>
                 <CardContent className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-400 block mb-1">Institution Name</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Institution Name</label>
                     <p className="font-medium text-slate-900 dark:text-slate-100">{libraryInfo.libraryName || 'Not configured'}</p>
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Physical Address</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Physical Address</label>
                     <p className="font-medium text-slate-900 dark:text-slate-100">{libraryInfo.address || 'Not configured'}</p>
                   </div>
                 </CardContent>
@@ -382,11 +382,11 @@ function SettingsForms() {
                 </CardHeader>
                 <CardContent className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-400 block mb-1">Opening Hours</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Opening Hours</label>
                     <p className="font-medium text-slate-900 dark:text-slate-100">{libraryInfo.hours || 'Standard Academic Hours'}</p>
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Contact Reference</label>
+                    <label className="text-slate-600 dark:text-slate-400 font-semibold block mb-1">Contact Reference</label>
                     <p className="font-medium text-slate-900 dark:text-slate-100">{libraryInfo.contact || 'Not configured'}</p>
                   </div>
                 </CardContent>
@@ -419,11 +419,11 @@ function SettingsForms() {
                   <div key={mt._id} className="py-3 flex items-center justify-between">
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-slate-100">{mt.displayName}</p>
-                      <p className="text-slate-400 text-[11px]">Rate: PKR {mt.finePerDay} per overdue day</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px] font-medium">Rate: PKR {mt.finePerDay} per overdue day</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-slate-800 dark:text-slate-200">Max PKR {mt.maxFinePerBook ?? 500} / book</p>
-                      <p className="text-slate-400 text-[11px]">Block at PKR {mt.maxFineBalance ?? 2000}</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px] font-medium">Block at PKR {mt.maxFineBalance ?? 2000}</p>
                     </div>
                   </div>
                 ))}
@@ -455,21 +455,21 @@ function SettingsForms() {
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Due Date Reminders</span>
                     <Badge color="purple">08:00 Daily</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Dispatches notices 3 days and 1 day prior to due date.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Dispatches notices 3 days and 1 day prior to due date.</p>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-850">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Overdue Assessments</span>
                     <Badge color="purple">09:00 Daily</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Computes daily accrued overdue delta and notifies borrower.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Computes daily accrued overdue delta and notifies borrower.</p>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-850">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Escalation & Suspension</span>
                     <Badge color="purple">10:00 Daily</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Blocks borrowing when loans exceed 14 elapsed days overdue.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Blocks borrowing when loans exceed 14 elapsed days overdue.</p>
                 </div>
               </CardContent>
             </Card>
@@ -482,21 +482,21 @@ function SettingsForms() {
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Hold Expiry Handoff</span>
                     <Badge color="blue">Every 30m</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Releases expired uncollected holds to the next queue patron.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Releases expired uncollected holds to the next queue patron.</p>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-850">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Membership Expiry</span>
                     <Badge color="purple">23:00 Daily</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Warns patrons 30 days and 7 days prior to card expiration.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Warns patrons 30 days and 7 days prior to card expiration.</p>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-850">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">Weekly Library Report</span>
                     <Badge color="green">Mon 07:00</Badge>
                   </div>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">Compiles loans, payments, and popular titles for administrators.</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">Compiles loans, payments, and popular titles for administrators.</p>
                 </div>
               </CardContent>
             </Card>

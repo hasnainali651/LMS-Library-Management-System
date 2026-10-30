@@ -70,81 +70,52 @@ app.use(sanitize);
 // Static directory for uploaded files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Global rate limiter: 100 requests per 15 minutes
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => process.env.NODE_ENV === 'test' || req.path === '/api/v1/health' || req.path === '/',
-  message: {
-    success: false,
-    message: 'Too many requests from this IP, please try again after 15 minutes',
-    errors: [],
-  },
-});
-app.use(globalLimiter);
+// Token Bucket Rate Limiting (Token Bucket Algorithm protecting every single route)
+const { createTokenBucketLimiter } = require('./middleware/tokenBucketRateLimiter');
 
-// Specific Rate Limiters:
-// 1. /auth/login: 10 requests / 15 minutes
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => process.env.NODE_ENV === 'test',
-  message: {
-    success: false,
-    message: 'Too many login attempts. Please try again after 15 minutes.',
-    errors: [],
-  },
+// 1. Global Token Bucket: protects every single route across the application
+// Capacity: 120 tokens (burst limit), Refill: 2 tokens/sec (120/min continuous replenishment)
+const globalTokenBucket = createTokenBucketLimiter({
+  bucketName: 'global',
+  capacity: 120,
+  refillRate: 2,
+  cost: 1,
+  message: 'Too many requests. Global token bucket capacity exceeded. Please retry in a few moments.',
 });
-app.use(['/api/v1/auth/login', '/api/auth/login'], loginLimiter);
+app.use(globalTokenBucket);
 
-// 2. /auth/register: 5 requests / hour
-const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => process.env.NODE_ENV === 'test',
-  message: {
-    success: false,
-    message: 'Too many account registrations. Please try again after 1 hour.',
-    errors: [],
-  },
+// 2. Authentication Token Bucket: protects ALL auth endpoints (/api/v1/auth/*)
+// Capacity: 20 tokens (well above 5 for user convenience), Refill: 1 token every 15 seconds (~4/min)
+const authTokenBucket = createTokenBucketLimiter({
+  bucketName: 'auth',
+  capacity: 20,
+  refillRate: 0.067, // 1 token per 15s
+  cost: 1,
+  message: 'Too many authentication attempts. Auth token bucket depleted. Please try again after a brief cooldown.',
 });
-app.use(['/api/v1/auth/register', '/api/auth/register'], registerLimiter);
+app.use(['/api/v1/auth', '/api/auth'], authTokenBucket);
 
-// 3. /ai/*: 20 requests / hour
-const aiLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => process.env.NODE_ENV === 'test',
-  message: {
-    success: false,
-    message: 'Too many AI requests. Please try again after 1 hour.',
-    errors: [],
-  },
+// 3. AI Exploration Token Bucket: protects /ai/* endpoints
+// Capacity: 30 tokens, Refill: 1 token every 10 seconds (0.1/s)
+const aiTokenBucket = createTokenBucketLimiter({
+  bucketName: 'ai',
+  capacity: 30,
+  refillRate: 0.1,
+  cost: 1,
+  message: 'Too many AI requests. AI token bucket limit reached. Please wait before generating more summaries.',
 });
-app.use(['/api/v1/ai', '/api/ai'], aiLimiter);
+app.use(['/api/v1/ai', '/api/ai'], aiTokenBucket);
 
-// 4. /search/autocomplete: 60 requests / minute
-const autocompleteLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 60,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => process.env.NODE_ENV === 'test',
-  message: {
-    success: false,
-    message: 'Search autocomplete rate limit exceeded. Please wait a moment.',
-    errors: [],
-  },
+// 4. Search Autocomplete Token Bucket: protects /search/autocomplete
+// Capacity: 60 tokens, Refill: 1 token/sec (60/min)
+const autocompleteTokenBucket = createTokenBucketLimiter({
+  bucketName: 'search_autocomplete',
+  capacity: 60,
+  refillRate: 1,
+  cost: 1,
+  message: 'Search autocomplete token bucket exceeded. Please slow down keystroke queries.',
 });
-app.use(['/api/v1/search/autocomplete', '/api/search/autocomplete'], autocompleteLimiter);
+app.use(['/api/v1/search/autocomplete', '/api/search/autocomplete'], autocompleteTokenBucket);
 
 // Mount all routes at /api/v1
 app.use('/api/v1', apiRoutes);

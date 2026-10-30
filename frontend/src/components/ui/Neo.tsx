@@ -32,9 +32,21 @@ export function NeoCard({
   return (
     <div
       onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick(e as unknown as React.MouseEvent<HTMLDivElement>);
+              }
+            }
+          : undefined
+      }
       className={`${cls} text-[var(--neo-text)] ${
-        highlighted ? 'border border-[var(--neo-accent)]/30 shadow-[0_0_0_1px_rgba(99,102,241,0.18)]' : ''
-      } ${onClick ? 'cursor-pointer hover:[box-shadow:var(--neo-raised-lg)] active:translate-y-[1px]' : ''} ${className}`}
+        highlighted ? 'border border-[var(--neo-accent)]/30 shadow-[0_0_0_1px_rgba(79,70,229,0.18)]' : ''
+      } ${onClick ? 'neo-card-interactive select-none' : ''} ${className}`}
       {...props}
     >
       {children}
@@ -100,7 +112,7 @@ export const NeoButton = forwardRef<HTMLButtonElement, NeoButtonProps>(
         type={type}
         disabled={disabled || isSpinning}
         onClick={onClick}
-        className={`inline-flex items-center justify-center font-semibold select-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--neo-accent-sky)] transition-all ${variantClass} ${sizeClasses} ${className}`}
+        className={`inline-flex items-center justify-center font-semibold select-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)] focus-visible:ring-offset-2 transition-[box-shadow,transform,background-color,color] ${variantClass} ${sizeClasses} ${className}`}
         {...props}
       >
         {isSpinning ? (
@@ -128,6 +140,7 @@ export const NeoInput = forwardRef<HTMLInputElement, NeoInputProps>(
   ({ label, error, icon, className = '', id, ...props }, ref) => {
     const generatedId = React.useId();
     const inputId = id || generatedId;
+    const errorId = `${inputId}-error`;
 
     return (
       <div className="w-full flex flex-col gap-1.5 text-left">
@@ -138,20 +151,26 @@ export const NeoInput = forwardRef<HTMLInputElement, NeoInputProps>(
         )}
         <div className="relative flex items-center">
           {icon && (
-            <span className="absolute left-3.5 text-[var(--neo-text-3)] flex items-center justify-center pointer-events-none">
+            <span className="absolute left-3.5 text-[var(--neo-text-3)] flex items-center justify-center pointer-events-none" aria-hidden="true">
               {icon}
             </span>
           )}
           <input
             ref={ref}
             id={inputId}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? errorId : undefined}
             className={`neo-input w-full py-2.5 ${icon ? 'pl-10' : 'pl-4'} pr-4 text-sm ${
               error ? 'border-[var(--neo-danger)] ring-2 ring-[var(--neo-danger)]/25' : ''
             } ${className}`}
             {...props}
           />
         </div>
-        {error && <span className="text-xs text-[var(--neo-danger)] font-medium mt-0.5">{error}</span>}
+        {error && (
+          <span id={errorId} role="alert" className="text-xs text-[var(--neo-danger)] font-medium mt-0.5">
+            {error}
+          </span>
+        )}
       </div>
     );
   }
@@ -306,20 +325,50 @@ export interface NeoToggleProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label?: React.ReactNode;
+  id?: string;
+  disabled?: boolean;
   className?: string;
 }
 
-export function NeoToggle({ checked, onChange, label, className = '' }: NeoToggleProps) {
+export function NeoToggle({
+  checked,
+  onChange,
+  label,
+  id,
+  disabled = false,
+  className = '',
+}: NeoToggleProps) {
+  const generatedId = React.useId();
+  const toggleId = id || generatedId;
+
   return (
     <div className={`neo-toggle-wrapper ${className}`}>
       <button
+        id={toggleId}
         type="button"
         role="switch"
         aria-checked={checked}
-        onClick={() => onChange(!checked)}
+        disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+        onKeyDown={(e) => {
+          if (!disabled && (e.key === ' ' || e.key === 'Enter')) {
+            e.preventDefault();
+            onChange(!checked);
+          }
+        }}
+        aria-label={typeof label === 'string' ? label : undefined}
         className={`neo-toggle ${checked ? 'active' : ''}`}
       />
-      {label && <span className="text-sm font-medium text-[var(--neo-text)]">{label}</span>}
+      {label && (
+        <label
+          htmlFor={toggleId}
+          className={`text-sm font-medium text-[var(--neo-text)] select-none ${
+            disabled ? 'opacity-45 cursor-not-allowed' : 'cursor-pointer'
+          }`}
+        >
+          {label}
+        </label>
+      )}
     </div>
   );
 }
@@ -470,21 +519,23 @@ export interface NeoTabsProps {
 
 export function NeoTabs({ tabs, activeTab, onChange, className = '' }: NeoTabsProps) {
   return (
-    <div className={`neo-inset-well-sm p-1.5 flex items-center gap-1.5 overflow-x-auto ${className}`}>
+    <div role="tablist" className={`neo-inset-well-sm p-1.5 flex items-center gap-1.5 overflow-x-auto ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={isActive}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-[var(--neo-r-sm)] text-xs font-semibold whitespace-nowrap transition-all select-none ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-[var(--neo-r-sm)] text-xs font-semibold whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)] focus-visible:ring-offset-2 select-none transition-[background-color,color,box-shadow] ${
               isActive
                 ? 'bg-[var(--neo-card)] text-[var(--neo-accent)] [box-shadow:var(--neo-raised-sm)] border border-[var(--neo-accent)]/20'
                 : 'text-[var(--neo-text-2)] hover:text-[var(--neo-text)] hover:bg-[var(--neo-surface)]/50'
             }`}
           >
-            {tab.icon && <span>{tab.icon}</span>}
+            {tab.icon && <span aria-hidden="true">{tab.icon}</span>}
             <span>{tab.label}</span>
           </button>
         );

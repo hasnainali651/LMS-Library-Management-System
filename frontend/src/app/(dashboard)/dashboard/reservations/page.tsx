@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Bookmark,
   Clock,
@@ -238,10 +239,13 @@ export default function ReservationsPage() {
                   <div className="flex items-start gap-4 flex-1 min-w-0">
                     <div className="w-14 h-20 rounded-xl bg-[var(--neo-inset-bg)] overflow-hidden shrink-0 border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] flex items-center justify-center shadow-[var(--neo-inset-sm)]">
                       {(item.coverImage || item.book?.coverImage) ? (
-                        <img
-                          src={item.coverImage || item.book?.coverImage}
-                          alt={item.bookTitle}
+                        <Image
+                          src={item.coverImage || item.book?.coverImage || ''}
+                          alt={item.bookTitle ?? 'Book cover'}
+                          width={56}
+                          height={80}
                           className="w-full h-full object-cover"
+                          unoptimized
                         />
                       ) : (
                         <BookOpen className="w-6 h-6 text-[var(--neo-text-muted)]" />
@@ -260,7 +264,7 @@ export default function ReservationsPage() {
                           </Badge>
                         )}
 
-                        <span className="text-[11px] font-mono text-slate-400">
+                        <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400 font-medium">
                           Requested {format(parseISO(item.requestDate), 'MMM d, yyyy')}
                         </span>
                       </div>
@@ -269,7 +273,7 @@ export default function ReservationsPage() {
                         {item.bookTitle}
                       </h3>
                       {item.author && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        <p className="text-xs text-slate-700 dark:text-slate-300 font-medium truncate">
                           by {item.author}
                         </p>
                       )}

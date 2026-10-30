@@ -10,7 +10,7 @@ const realTransport = nodemailer.createTransport({
   },
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   const originalSendMail = realTransport.sendMail.bind(realTransport);
   realTransport.sendMail = async function (mailOptions, callback) {
     try {

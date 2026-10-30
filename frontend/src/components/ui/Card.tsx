@@ -33,7 +33,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div
       className={cn(
-        'bg-[var(--neo-card)] text-[var(--neo-text)] transition-all duration-200',
+        'bg-[var(--neo-card)] text-[var(--neo-text)] transition-[transform,box-shadow] duration-200',
         sizeClasses,
         highlighted && 'border border-[var(--neo-accent)]/30 shadow-[0_0_0_1px_rgba(99,102,241,0.2)]',
         className

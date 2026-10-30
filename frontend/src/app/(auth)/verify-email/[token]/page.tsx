@@ -19,7 +19,7 @@ export default function VerifyEmailPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [countdown, setCountdown] = useState(3);
 
-  const verifyToken = async () => {
+  const verifyToken = React.useCallback(async () => {
     if (!token) {
       setStatus('error');
       setErrorMessage('Verification token is missing from the URL.');
@@ -39,11 +39,11 @@ export default function VerifyEmailPage() {
         'Invalid or expired email verification link.';
       setErrorMessage(msg);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     verifyToken();
-  }, [token]);
+  }, [verifyToken]);
 
   // 3s countdown on success -> redirect /login
   useEffect(() => {
@@ -69,14 +69,14 @@ export default function VerifyEmailPage() {
           animate={{ opacity: 1 }}
           className="space-y-4"
         >
-          <div className="w-16 h-16 rounded-2xl bg-primary-600/10 border border-primary-500/30 text-primary-400 mx-auto flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/40 border border-primary-300 dark:border-primary-500/30 text-primary-600 dark:text-primary-400 mx-auto flex items-center justify-center">
             <Loader2 className="w-8 h-8 animate-spin" />
           </div>
           <div className="space-y-1">
-            <h2 className="font-display text-xl font-bold text-white">
+            <h2 className="font-display text-xl font-bold text-[var(--neo-text)]">
               Verifying Your Patron Email...
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
+            <p className="text-xs sm:text-sm text-[var(--neo-text-2)]">
               Validating cryptographic token with City Library security service
             </p>
           </div>
@@ -90,22 +90,22 @@ export default function VerifyEmailPage() {
           transition={{ duration: 0.3 }}
           className="space-y-4"
         >
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center shadow-lg shadow-emerald-950/40">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center shadow-lg shadow-emerald-950/40">
             <CheckCircle2 className="w-8 h-8 stroke-[2]" />
           </div>
 
           <div className="space-y-1.5">
-            <h2 className="font-display text-2xl font-bold text-white">
+            <h2 className="font-display text-2xl font-bold text-[var(--neo-text)]">
               Email Verified Successfully!
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-sm mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--neo-text-2)] max-w-sm mx-auto leading-relaxed">
               Your patron account is now fully activated with full lending privileges.
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-slate-300">
+          <div className="p-3.5 rounded-xl bg-[var(--neo-inset-bg)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] text-xs text-[var(--neo-text-2)]">
             Redirecting to sign in portal in{' '}
-            <strong className="text-accent-400 font-mono text-sm">{countdown}s</strong>...
+            <strong className="text-[var(--neo-accent)] font-mono text-sm">{countdown}s</strong>...
           </div>
 
           <div className="pt-2">
@@ -125,20 +125,20 @@ export default function VerifyEmailPage() {
           transition={{ duration: 0.3 }}
           className="space-y-4"
         >
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 mx-auto flex items-center justify-center shadow-lg shadow-rose-950/40">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center shadow-lg shadow-rose-950/40">
             <XCircle className="w-8 h-8 stroke-[2]" />
           </div>
 
           <div className="space-y-1.5">
-            <h2 className="font-display text-xl font-bold text-white">
+            <h2 className="font-display text-xl font-bold text-[var(--neo-text)]">
               Verification Failed
             </h2>
-            <p className="text-xs sm:text-sm text-rose-400 max-w-sm mx-auto">
+            <p className="text-xs sm:text-sm text-rose-600 dark:text-rose-400 max-w-sm mx-auto font-medium">
               {errorMessage || 'We could not verify your email address.'}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-slate-400 text-left space-y-1.5">
+          <div className="p-3.5 rounded-xl bg-[var(--neo-inset-bg)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] text-xs text-[var(--neo-text-2)] text-left space-y-1.5">
             <p>Verification links can expire after 24 hours or if already used.</p>
             <p>If you already confirmed, you can sign in directly.</p>
           </div>

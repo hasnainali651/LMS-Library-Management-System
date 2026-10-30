@@ -16,17 +16,17 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'neo-btn-accent text-white [box-shadow:var(--neo-accent-glow)] hover:brightness-105 active:translate-y-[1px] transition-all',
+    'neo-btn-accent text-white [box-shadow:var(--neo-accent-glow)] hover:brightness-105 active:translate-y-[1px] transition-[box-shadow,transform,background-color,color] duration-150',
   accent:
-    'neo-btn-accent text-white [box-shadow:var(--neo-accent-glow)] hover:brightness-105 active:translate-y-[1px] transition-all',
+    'neo-btn-accent text-white [box-shadow:var(--neo-accent-glow)] hover:brightness-105 active:translate-y-[1px] transition-[box-shadow,transform,background-color,color] duration-150',
   secondary:
-    'neo-btn text-[var(--neo-text)] [box-shadow:var(--neo-raised-sm)] hover:[box-shadow:var(--neo-raised)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-all',
+    'neo-btn text-[var(--neo-text)] [box-shadow:var(--neo-raised-sm)] hover:[box-shadow:var(--neo-raised)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-[box-shadow,transform,background-color,color] duration-150',
   default:
-    'neo-btn text-[var(--neo-text)] [box-shadow:var(--neo-raised-sm)] hover:[box-shadow:var(--neo-raised)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-all',
+    'neo-btn text-[var(--neo-text)] [box-shadow:var(--neo-raised-sm)] hover:[box-shadow:var(--neo-raised)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-[box-shadow,transform,background-color,color] duration-150',
   ghost:
-    'bg-transparent text-[var(--neo-text-2)] hover:text-[var(--neo-text)] hover:bg-[var(--neo-surface)] hover:[box-shadow:var(--neo-flat)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-all',
+    'bg-transparent text-[var(--neo-text-2)] hover:text-[var(--neo-text)] hover:bg-[var(--neo-surface)] hover:[box-shadow:var(--neo-flat)] active:[box-shadow:var(--neo-inset-sm)] active:translate-y-[1px] transition-[box-shadow,transform,background-color,color] duration-150',
   danger:
-    'bg-[var(--neo-danger)] text-white shadow-[0_2px_8px_rgba(220,38,38,0.22)] hover:brightness-105 active:translate-y-[1px] transition-all',
+    'bg-[var(--neo-danger)] text-white shadow-[0_2px_8px_rgba(220,38,38,0.22)] hover:brightness-105 active:translate-y-[1px] transition-[box-shadow,transform,background-color,color,filter] duration-150',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -57,8 +57,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={isDisabled}
         className={cn(
-          'inline-flex items-center justify-center font-medium select-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)]',
-          'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none transition-all duration-150',
+          'inline-flex items-center justify-center font-medium select-none outline-none focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)] focus-visible:ring-offset-2',
+          'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none transition-[box-shadow,transform,background-color,color] duration-150',
           variantStyles[variant] || variantStyles.secondary,
           sizeStyles[size],
           className

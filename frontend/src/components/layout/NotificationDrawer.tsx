@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {
   Bell,
@@ -65,7 +65,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
     if (!nextOpen) onClose?.();
   };
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get('/notifications');
@@ -76,9 +76,9 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const res = await api.get('/notifications/unread-count');
       const count = res.data?.data?.unreadCount ?? 0;
@@ -86,20 +86,20 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
     } catch (err) {
       // ignore
     }
-  };
+  }, [onUnreadCountChange]);
 
   useEffect(() => {
     if (open) {
       fetchNotifications();
       fetchUnreadCount();
     }
-  }, [open]);
+  }, [open, fetchNotifications, fetchUnreadCount]);
 
   useEffect(() => {
     if (user?._id) {
       fetchUnreadCount();
     }
-  }, [user?._id]);
+  }, [user?._id, fetchUnreadCount]);
 
   useEffect(() => {
     if (!socket || !user?._id) return;
@@ -160,7 +160,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-[var(--neo-shadow-dark)]/25">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] text-[var(--neo-accent)] flex items-center justify-center [box-shadow:var(--neo-flat)] border border-[var(--neo-border-light)]">
+              <div className="w-9 h-9 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] text-[var(--neo-accent)] flex items-center justify-center [box-shadow:var(--neo-flat)]">
                 <Bell className="w-4 h-4" />
               </div>
               <div>
@@ -186,7 +186,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
                 </Button>
               )}
 
-              <DialogPrimitive.Close className="neo-btn w-8 h-8 rounded-full flex items-center justify-center text-[var(--neo-text-2)] hover:text-[var(--neo-text)]">
+              <DialogPrimitive.Close className="w-8 cursor-pointer h-8 rounded-full flex items-center justify-center text-[var(--neo-text-2)] hover:text-[var(--neo-text)]">
                 <X className="w-4 h-4" />
                 <span className="sr-only">Close</span>
               </DialogPrimitive.Close>

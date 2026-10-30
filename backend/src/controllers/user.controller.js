@@ -28,7 +28,7 @@ const queueReset = async (user) => {
   const url = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
   return notificationService.queueEmail({
     userId: user._id, to: user.email, subject: 'Library account password setup / reset',
-    html: templates.resetPassword(user.name, url), dedupeKey: `password-reset:${user._id}:${user.passwordResetToken}`,
+    html: templates.resetPassword(user.name, url), dedupKey: `password-reset:${user._id}:${user.passwordResetToken}`,
   });
 };
 
@@ -87,4 +87,13 @@ const updateUserStatus = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, user, 'User updated successfully'));
 });
 
-module.exports = { getUsers, createUser, resetUserPassword, updateUserStatus };
+const approveStaffUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) throw new ApiError(404, 'User not found.');
+  if (user.role !== 'librarian') throw new ApiError(400, 'User does not have a staff/librarian role.');
+  user.isStaffApproved = true;
+  await user.save({ validateBeforeSave: false });
+  return res.status(200).json(new ApiResponse(200, user, 'Staff credentials verified and approved successfully.'));
+});
+
+module.exports = { getUsers, createUser, resetUserPassword, updateUserStatus, approveStaffUser };

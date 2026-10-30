@@ -271,7 +271,7 @@ function AdminFinesContent() {
       render: (f) => (
         <div className="min-w-0">
           <p className="font-semibold text-xs text-slate-900 dark:text-slate-100 truncate">{f.member?.name ?? f.memberName ?? 'Unknown'}</p>
-          <p className="text-[11px] text-slate-400 font-mono">{f.member?.memberId ?? f.memberId ?? ''}</p>
+          <p className="text-[11px] text-slate-600 dark:text-slate-400 font-mono font-medium">{f.member?.memberId ?? f.memberId ?? ''}</p>
         </div>
       ),
     },
@@ -304,7 +304,7 @@ function AdminFinesContent() {
       header: 'Date',
       sortable: true,
       render: (f) => (
-        <span className="font-mono text-[11px] text-slate-400">
+        <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
           {f.createdAt ? format(parseISO(f.createdAt), 'MMM d, yy') : '—'}
         </span>
       ),

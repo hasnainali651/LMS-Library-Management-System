@@ -30,6 +30,7 @@ import { BookItem } from '@/components/ui/BookCard';
 import { QuickViewModal, QuickViewBook } from '@/components/ui/QuickViewModal';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 
@@ -146,7 +147,7 @@ const BookSearchCard: React.FC<{
             {book.title}
           </h3>
         </Link>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
+        <p className="text-xs text-slate-700 dark:text-slate-300 mt-1 line-clamp-1">
           {authorsStr}
         </p>
 
@@ -155,22 +156,22 @@ const BookSearchCard: React.FC<{
           {(book.rating ?? 0) > 0 ? (
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 fill-amber-400 stroke-amber-400" />
-              <span className="text-[11px] font-semibold text-amber-500 tabular-nums">
+              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 tabular-nums">
                 {book.rating!.toFixed(1)}
               </span>
               {(book.reviewCount ?? 0) > 0 && (
-                <span className="text-[10px] text-slate-400">({book.reviewCount})</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">({book.reviewCount})</span>
               )}
             </div>
           ) : <div />}
           {book.publishedYear && (
-            <span className="text-[10px] text-slate-400 tabular-nums">{book.publishedYear}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 tabular-nums font-medium">{book.publishedYear}</span>
           )}
         </div>
 
         {/* Copies */}
-        <div className="mt-2.5 text-[11px] text-slate-500 dark:text-slate-400">
-          <span className={cn('font-bold', isAvailable ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500')}>
+        <div className="mt-2.5 text-[11px] text-slate-700 dark:text-slate-300">
+          <span className={cn('font-bold', isAvailable ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400')}>
             {book.availableCopies ?? 0}
           </span>
           {' / '}{book.totalCopies ?? '—'} copies available
@@ -293,13 +294,13 @@ const EmptySearchState: React.FC<{ query: string }> = ({ query }) => (
   </motion.div>
 );
 
-// ─── Mock categories for sidebar ──────────────────────────────────────────────
-const MOCK_CATEGORIES = [
+// ─── Standard catalog facets for sidebar ──────────────────────────────────────
+const DEFAULT_CATEGORIES = [
   'Computer Science', 'Fiction', 'Science', 'History', 'Mathematics',
   'Philosophy', 'Psychology', 'Economics', 'Engineering', 'Literature',
   'Business', 'Medicine', 'Law', 'Arts', 'Languages',
 ];
-const MOCK_LANGUAGES = ['English', 'Urdu', 'Arabic', 'French', 'German'];
+const CATALOG_LANGUAGES = ['English', 'Urdu', 'Arabic', 'French', 'German'];
 const SORTS: { value: SortOption; label: string }[] = [
   { value: 'relevance', label: 'Relevance' },
   { value: 'newest', label: 'Newest First' },
@@ -336,7 +337,7 @@ function SearchPageInner() {
   const [books, setBooks] = useState<SearchBook[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<string[]>(MOCK_CATEGORIES);
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
 
   // Autocomplete
   const [acItems, setAcItems] = useState<AutocompleteItem[]>([]);
@@ -433,7 +434,7 @@ function SearchPageInner() {
   // ── Initial + param-driven search ────────────────────────
   useEffect(() => {
     fetchBooks(query, page, selectedCategories, selectedLanguages, yearFrom, yearTo, availableOnly, sort);
-  }, [query, page, selectedCategories, selectedLanguages, yearFrom, yearTo, availableOnly, sort]);
+  }, [fetchBooks, query, page, selectedCategories, selectedLanguages, yearFrom, yearTo, availableOnly, sort]);
 
   // ── Autocomplete ──────────────────────────────────────────
   const fetchAutocomplete = useCallback((val: string) => {
@@ -511,10 +512,10 @@ function SearchPageInner() {
       const b = books.find((bk) => bk._id === bookId);
       if (b) { setQuickViewBook(b); setQuickViewOpen(true); }
     }
-  }, [books]);
+  }, [books, searchParams]);
 
   // ── Sidebar content ────────────────────────────────────────
-  const SidebarContent = () => (
+  const sidebarContent = (
     <div className="space-y-6 text-sm">
       {/* Sort */}
       <div>
@@ -602,7 +603,7 @@ function SearchPageInner() {
           <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-xs uppercase tracking-wider">Language</h3>
         </div>
         <div className="space-y-0.5">
-          {MOCK_LANGUAGES.map((lang) => (
+          {CATALOG_LANGUAGES.map((lang) => (
             <CheckItem
               key={lang}
               label={lang}
@@ -662,7 +663,47 @@ function SearchPageInner() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
+      {/* ── TOP NAVIGATION BAR ──────────────────────────────── */}
+      <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 sm:px-8 h-16 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-lg overflow-hidden shadow-sm group-hover:scale-105 transition-transform shrink-0">
+            <Image
+              src="/nextgen_lms.webp"
+              alt="NextGen LMS Logo"
+              width={36}
+              height={36}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
+          <div>
+            <span className="font-display font-bold text-sm text-slate-900 dark:text-slate-100 tracking-tight block">
+              NextGen LMS
+            </span>
+            <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+              Catalogue Search
+            </span>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Link
+            href="/books"
+            className="text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:block"
+          >
+            Catalog View
+          </Link>
+          <Link
+            href="/dashboard"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-primary-600 text-white hover:bg-primary-500 shadow-sm transition-colors"
+          >
+            Dashboard
+          </Link>
+        </div>
+      </header>
+
       {/* ── HERO SEARCH ────────────────────────────────────── */}
       <div className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 overflow-hidden">
         {/* Decorative blobs */}
@@ -727,7 +768,7 @@ function SearchPageInner() {
                       className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
                     >
                       {item.coverImage ? (
-                        <img src={item.coverImage} alt="" className="w-8 h-10 object-cover rounded shrink-0 shadow-sm" />
+                        <Image src={item.coverImage} alt="" width={32} height={40} className="w-8 h-10 object-cover rounded shrink-0 shadow-sm" unoptimized />
                       ) : (
                         <div className="w-8 h-10 rounded bg-primary-100 dark:bg-primary-950/60 flex items-center justify-center shrink-0">
                           <BookOpen className="w-3.5 h-3.5 text-primary-600" />
@@ -755,7 +796,7 @@ function SearchPageInner() {
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-6 shadow-sm">
-              <SidebarContent />
+              {sidebarContent}
             </div>
           </aside>
 
@@ -885,7 +926,7 @@ function SearchPageInner() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <SidebarContent />
+              {sidebarContent}
             </motion.div>
           </>
         )}

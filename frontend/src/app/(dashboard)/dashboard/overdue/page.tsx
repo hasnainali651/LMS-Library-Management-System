@@ -98,7 +98,7 @@ export default function OverduePage() {
           <p className="font-semibold text-slate-900 dark:text-slate-100">
             {o.book?.title || 'Unknown Title'}
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
             {o.member?.name || 'Unknown Patron'} ({o.member?.email || o.member?.memberId || 'N/A'})
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function OverduePage() {
       header: 'Due Date',
       sortable: true,
       render: (o) => (
-        <span className="font-mono text-xs text-slate-600 dark:text-slate-300">
+        <span className="font-mono text-xs text-slate-700 dark:text-slate-300 tabular-nums">
           {o.dueDate ? format(parseISO(o.dueDate), 'MMM d, yyyy') : '—'}
         </span>
       ),
@@ -121,7 +121,7 @@ export default function OverduePage() {
       render: (o) => {
         const days = Math.max(1, differenceInCalendarDays(new Date(), parseISO(o.dueDate)));
         return (
-          <span className="font-bold text-xs text-rose-600 dark:text-rose-400">
+          <span className="font-bold text-xs text-rose-600 dark:text-rose-400 tabular-nums">
             {days} day{days === 1 ? '' : 's'} late
           </span>
         );
@@ -135,7 +135,7 @@ export default function OverduePage() {
         const days = Math.max(1, differenceInCalendarDays(new Date(), parseISO(o.dueDate)));
         const fine = o.fineAmount ?? days * 5;
         return (
-          <span className="font-semibold text-xs text-rose-600 dark:text-rose-400">
+          <span className="font-semibold text-xs text-rose-600 dark:text-rose-400 tabular-nums">
             PKR {fine.toFixed(2)}
           </span>
         );
@@ -174,7 +174,7 @@ export default function OverduePage() {
         <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Overdue Management Desk
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
           Monitor late returns and dispatch automated reminder alerts to overdue patrons.
         </p>
       </div>
@@ -215,7 +215,7 @@ export default function OverduePage() {
           <Table columns={columns} data={items} />
           {totalPages > 1 && (
             <div className="flex justify-between items-center pt-2">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 Showing page {page} of {totalPages} ({totalDocs} total overdue)
               </p>
               <Pagination

@@ -1,6 +1,6 @@
 const express = require('express');
 const { body, param, query } = require('express-validator');
-const { getUsers, createUser, resetUserPassword, updateUserStatus } = require('../controllers/user.controller');
+const { getUsers, createUser, resetUserPassword, updateUserStatus, approveStaffUser } = require('../controllers/user.controller');
 const { protect } = require('../middleware/auth');
 const { isAdmin } = require('../middleware/roles');
 const { validate } = require('../middleware/validate');
@@ -39,5 +39,6 @@ router.put('/:id/status', [
   body('isActive').optional().isBoolean({ strict: true }),
   validate,
 ], logAction('UPDATE_STAFF_STATUS', 'User'), updateUserStatus);
+router.patch('/:id/approve-staff', [idValidation, validate], logAction('APPROVE_STAFF', 'User'), approveStaffUser);
 router.post('/:id/reset-password', [idValidation, onlyFields([]), validate], logAction('RESET_STAFF_PASSWORD', 'User'), resetUserPassword);
 module.exports = router;

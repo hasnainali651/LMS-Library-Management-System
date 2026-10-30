@@ -243,7 +243,7 @@ function UsersContent() {
           </div>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{user.name}</p>
-            <p className="truncate text-[11px] text-slate-400">{user.email}</p>
+            <p className="truncate text-[11px] text-slate-600 dark:text-slate-400 font-mono">{user.email}</p>
           </div>
         </div>
       ),
@@ -258,7 +258,7 @@ function UsersContent() {
       key: 'lastLogin',
       header: 'Last Login',
       render: (user) => (
-        <span className="font-mono text-xs text-slate-500">
+        <span className="font-mono text-xs text-slate-700 dark:text-slate-300 tabular-nums">
           {user.lastLogin ? format(parseISO(user.lastLogin), 'MMM d, yyyy') : 'Never'}
         </span>
       ),
@@ -267,7 +267,7 @@ function UsersContent() {
       key: 'createdAt',
       header: 'Joined',
       render: (user) => (
-        <span className="font-mono text-xs text-slate-400">
+        <span className="font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums">
           {user.createdAt ? format(parseISO(user.createdAt), 'MMM d, yyyy') : '—'}
         </span>
       ),
@@ -283,14 +283,14 @@ function UsersContent() {
               setEditTarget(user);
               setEditRole(user.role);
             }}
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-primary-950/40"
+            className="rounded-lg p-1.5 text-slate-600 dark:text-slate-400 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-primary-950/40"
             title="Edit role"
           >
             <Edit2 className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => setResetTarget(user)}
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950/40"
+            className="rounded-lg p-1.5 text-slate-600 dark:text-slate-400 transition-colors hover:bg-sky-50 hover:text-sky-600 dark:hover:bg-sky-950/40"
             title="Send password reset"
           >
             <KeyRound className="h-3.5 w-3.5" />
@@ -299,8 +299,8 @@ function UsersContent() {
             onClick={() => setStatusTarget(user)}
             className={`rounded-lg p-1.5 transition-colors ${
               user.isActive
-                ? 'text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40'
-                : 'text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40'
+                ? 'text-slate-600 dark:text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40'
             }`}
             title={user.isActive ? 'Suspend account' : 'Reactivate account'}
           >
@@ -318,7 +318,7 @@ function UsersContent() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Staff Management
           </h1>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
             Manage librarian and administrator accounts, access levels, and reset-email delivery.
           </p>
         </div>
@@ -497,7 +497,7 @@ function UsersContent() {
             </div>
             <div>
               <p className="font-semibold text-slate-900 dark:text-slate-100">{statusTarget.name}</p>
-              <p className="text-xs text-slate-400">{statusTarget.email}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">{statusTarget.email}</p>
             </div>
           </div>
         )}
@@ -529,7 +529,7 @@ function UsersContent() {
           </div>
           <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
             <p className="font-semibold text-slate-900 dark:text-slate-100">{resetTarget?.name}</p>
-            <p className="mt-1 text-slate-500 dark:text-slate-400">{resetTarget?.email}</p>
+            <p className="mt-1 text-slate-600 dark:text-slate-400 font-mono">{resetTarget?.email}</p>
           </div>
         </div>
       </Modal>

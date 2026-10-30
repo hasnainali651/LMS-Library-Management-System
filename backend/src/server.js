@@ -33,8 +33,15 @@ const gracefulShutdown = async () => {
     await cleanup(stopNotificationProcessor);
     await cleanup(() => mongoose.connection.close(false));
     await cleanup(async () => {
-      if (redis.status !== 'end' && redis.status !== 'wait') await redis.quit();
-      else redis.disconnect();
+      if (redis.status === 'ready') {
+        try {
+          await redis.quit();
+        } catch {
+          redis.disconnect();
+        }
+      } else {
+        redis.disconnect();
+      }
     });
     const failed = results.find((result) => result.status === 'rejected');
     if (failed) throw failed.reason;
@@ -64,7 +71,11 @@ const startServer = async () => {
     console.log(`LMS API listening on port ${server.address().port}`);
     return server;
   } catch (error) {
-    await gracefulShutdown();
+    try {
+      await gracefulShutdown();
+    } catch (shutdownErr) {
+      // Avoid masking the original startup failure
+    }
     throw error;
   }
 };

@@ -56,7 +56,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] p-5 md:p-6 [box-shadow:var(--neo-raised)] hover:[box-shadow:var(--neo-raised-lg)] border border-[var(--neo-border-light)] transition-all duration-200',
+        'relative overflow-hidden rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] p-5 md:p-6 [box-shadow:var(--neo-raised)] hover:[box-shadow:var(--neo-raised-lg)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] transition-all duration-200',
         className
       )}
       {...props}
@@ -74,7 +74,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         {Icon && (
           <div
             className={cn(
-              'w-11 h-11 rounded-[var(--neo-r-sm)] flex items-center justify-center shrink-0 border border-[var(--neo-border-light)] [box-shadow:var(--neo-flat)]',
+              'w-11 h-11 rounded-[var(--neo-r-sm)] flex items-center justify-center shrink-0 border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] [box-shadow:var(--neo-flat)]',
               theme.iconBg,
               theme.iconText
             )}

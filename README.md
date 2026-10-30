@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="frontend/public/nextgen_lms0.png" alt="NextGen LMS brand mark" width="96" />
+  <img src="frontend/public/nextgen_lms.webp" alt="NextGen LMS brand mark" width="96" />
 </p>
 
 NextGen LMS brings a library's catalog, circulation desk, and patron services into

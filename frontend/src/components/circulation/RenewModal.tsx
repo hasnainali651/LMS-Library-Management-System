@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { addDays, format, parseISO } from 'date-fns';
 import { Calendar, RotateCcw, AlertTriangle, CheckCircle2, ShieldAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -129,10 +130,13 @@ export const RenewModal: React.FC<RenewModalProps> = ({
         {/* Book Info Summary */}
         <div className="flex items-start gap-3.5 p-4 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] border border-[var(--neo-border-light)] [box-shadow:var(--neo-flat)]">
           {loan.coverImage ? (
-            <img
+            <Image
               src={loan.coverImage}
               alt={title}
+              width={48}
+              height={64}
               className="w-12 h-16 object-cover rounded shadow-sm shrink-0"
+              unoptimized
             />
           ) : (
             <div className="w-12 h-16 rounded-[var(--neo-r-xs)] bg-[var(--neo-card)] text-[var(--neo-accent)] flex items-center justify-center shrink-0 border border-[var(--neo-border-light)]">

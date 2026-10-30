@@ -29,6 +29,8 @@ import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ErrorState } from '@/components/ui/ErrorState';
+import Image from 'next/image';
 
 export interface BookEntity {
   _id: string;
@@ -54,6 +56,7 @@ export default function LibrarianBooksPage() {
 function BookForms() {
   const [books, setBooks] = useState<BookEntity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
 
@@ -124,6 +127,7 @@ function BookForms() {
   // Fetch Books
   const fetchBooks = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await api.get('/books');
       const data = res.data?.data?.books || res.data?.data || res.data;
@@ -145,74 +149,60 @@ function BookForms() {
             status: b.availableCopies > 0 ? 'available' : 'issued',
           }))
         );
+      } else {
+        setBooks([]);
       }
     } catch {
-      // Realistic fallback books
-      setBooks([
-        {
-          _id: 'b1',
-          isbn: '9780132350884',
-          title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-          authors: ['Robert C. Martin'],
-          publishedYear: 2008,
-          publisher: 'Prentice Hall',
-          categories: ['Software Engineering', 'Computer Science'],
-          coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=400&q=80',
-          totalCopies: 5,
-          availableCopies: 3,
-          shelfLocation: 'CS-12-04',
-          status: 'available',
-        },
-        {
-          _id: 'b2',
-          isbn: '9781449373320',
-          title: 'Designing Data-Intensive Applications',
-          authors: ['Martin Kleppmann'],
-          publishedYear: 2017,
-          publisher: "O'Reilly Media",
-          categories: ['Systems', 'Databases'],
-          coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80',
-          totalCopies: 4,
-          availableCopies: 1,
-          shelfLocation: 'SYS-04-11',
-          status: 'available',
-        },
-        {
-          _id: 'b3',
-          isbn: '9780262033848',
-          title: 'Introduction to Algorithms (CLRS)',
-          authors: ['Thomas H. Cormen', 'Charles E. Leiserson'],
-          publishedYear: 2009,
-          publisher: 'MIT Press',
-          categories: ['Algorithms', 'Computer Science'],
-          coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80',
-          totalCopies: 6,
-          availableCopies: 0,
-          shelfLocation: 'CS-01-08',
-          status: 'issued',
-        },
-        {
-          _id: 'b4',
-          isbn: '9780061120084',
-          title: 'To Kill a Mockingbird',
-          authors: ['Harper Lee'],
-          publishedYear: 1960,
-          publisher: 'J. B. Lippincott & Co.',
-          categories: ['Literature', 'Classics'],
-          coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
-          totalCopies: 3,
-          availableCopies: 2,
-          shelfLocation: 'LIT-02-04',
-          status: 'available',
-        },
-      ]);
+      setFetchError('Unable to load catalog books. Please verify connection and try again.');
+      setBooks([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBooks();
+    let active = true;
+    const load = async () => {
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const res = await api.get('/books');
+        const data = res.data?.data?.books || res.data?.data || res.data;
+        if (!active) return;
+        if (Array.isArray(data)) {
+          setBooks(
+            data.map((b: any) => ({
+              _id: b._id || b.id,
+              isbn: b.isbn || 'N/A',
+              title: b.title || 'Untitled',
+              authors: b.authors || 'Unknown',
+              publishedYear: b.publishedYear,
+              publisher: b.publisher,
+              categories: Array.isArray(b.categories) ? b.categories : [b.category || 'General'],
+              description: b.description,
+              coverImage: b.coverImage,
+              totalCopies: b.totalCopies ?? 1,
+              availableCopies: b.availableCopies ?? 1,
+              shelfLocation: b.shelfLocation || 'CS-01-01',
+              status: b.availableCopies > 0 ? 'available' : 'issued',
+            }))
+          );
+        } else {
+          setBooks([]);
+        }
+      } catch {
+        if (active) {
+          setFetchError('Unable to load catalog books. Please verify connection and try again.');
+          setBooks([]);
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Open Create Modal
@@ -451,9 +441,9 @@ function BookForms() {
       sortable: true,
       render: (book) => (
         <div className="flex items-center gap-3 min-w-[220px]">
-          <div className="w-10 h-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+          <div className="w-10 h-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-800 flex items-center justify-center relative">
             {book.coverImage ? (
-              <img src={book.coverImage} alt={book.title} className="w-full h-full object-cover" />
+              <Image src={book.coverImage} alt={book.title} width={40} height={56} unoptimized className="w-full h-full object-cover" />
             ) : (
               <BookOpen className="w-4 h-4 text-slate-400" />
             )}
@@ -462,7 +452,7 @@ function BookForms() {
             <p className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">
               {book.title}
             </p>
-            <p className="text-[11px] text-slate-500 truncate">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium truncate">
               by {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
             </p>
           </div>
@@ -473,8 +463,8 @@ function BookForms() {
       key: 'isbn',
       header: 'ISBN',
       sortable: true,
-      className: 'font-mono text-xs',
-      render: (b) => <span className="text-slate-600 dark:text-slate-300">{b.isbn}</span>,
+      className: 'font-mono text-xs tabular-nums',
+      render: (b) => <span className="text-slate-700 dark:text-slate-300 font-medium">{b.isbn}</span>,
     },
     {
       key: 'shelfLocation',
@@ -492,11 +482,11 @@ function BookForms() {
       header: 'Copies (Avail/Total)',
       sortable: true,
       render: (b) => (
-        <span className="font-mono text-xs font-semibold">
-          <span className={b.availableCopies > 0 ? 'text-emerald-600' : 'text-rose-600'}>
+        <span className="font-mono text-xs font-semibold tabular-nums">
+          <span className={b.availableCopies > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
             {b.availableCopies}
           </span>
-          <span className="text-slate-400"> / {b.totalCopies}</span>
+          <span className="text-slate-600 dark:text-slate-400"> / {b.totalCopies}</span>
         </span>
       ),
     },
@@ -530,7 +520,7 @@ function BookForms() {
             size="sm"
             onClick={() => handleOpenEdit(book)}
             title="Edit book details"
-            className="p-1.5 text-slate-500 hover:text-slate-900"
+            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
           >
             <Edit2 className="w-3.5 h-3.5" />
           </Button>
@@ -557,7 +547,7 @@ function BookForms() {
             <BookOpen className="w-6 h-6 text-primary-600" />
             Catalog Book Inventory
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
             Manage titles, copy inventories, physical shelf call numbers, and ISBN lookups.
           </p>
         </div>
@@ -576,7 +566,7 @@ function BookForms() {
       {/* Search and Filters Bar */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--neo-text-muted)] pointer-events-none" />
           <input
             type="text"
             placeholder="Search catalog by title, author name, or ISBN checksum..."
@@ -609,6 +599,12 @@ function BookForms() {
       {/* Books Table */}
       {loading ? (
         <Skeleton variant="table" rows={4} cols={6} />
+      ) : fetchError ? (
+        <ErrorState
+          title="Could Not Load Catalog"
+          message={fetchError}
+          onRetry={fetchBooks}
+        />
       ) : filteredBooks.length > 0 ? (
         <Table columns={columns} data={filteredBooks} />
       ) : (
@@ -675,7 +671,7 @@ function BookForms() {
                 Auto-fill from ISBN
               </Button>
             </div>
-            <p className="text-[10px] text-slate-400">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">
               Auto-fills title, authors, publisher, year, and description from Google Books / OpenLibrary.
             </p>
           </div>
@@ -765,23 +761,26 @@ function BookForms() {
             >
               {coverFilePreview ? (
                 <div className="flex items-center gap-3">
-                  <img
+                  <Image
                     src={coverFilePreview}
                     alt="Cover preview"
+                    width={48}
+                    height={64}
+                    unoptimized
                     className="w-12 h-16 object-cover rounded shadow-sm border"
                   />
                   <div className="text-left">
                     <p className="font-semibold text-slate-800 dark:text-slate-200">Image Loaded</p>
-                    <p className="text-[11px] text-slate-400">Click or drag another image to replace</p>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Click or drag another image to replace</p>
                   </div>
                 </div>
               ) : (
                 <>
                   <UploadCloud className="w-6 h-6 text-slate-400 mb-1" />
-                  <p className="text-slate-600 dark:text-slate-300 font-medium">
+                  <p className="text-slate-700 dark:text-slate-200 font-medium">
                     Drag and drop cover image here, or browse
                   </p>
-                  <p className="text-[10px] text-slate-400">PNG, JPG, WEBP up to 5MB</p>
+                  <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">PNG, JPG, WEBP up to 5MB</p>
                 </>
               )}
             </div>
@@ -840,7 +839,7 @@ function BookForms() {
           <div className="space-y-3.5 text-xs">
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
               <p className="font-bold text-slate-900 dark:text-slate-100">{copyTargetBook.title}</p>
-              <p className="text-slate-400 font-mono mt-0.5">
+              <p className="text-slate-600 dark:text-slate-400 font-mono mt-0.5">
                 Current: {copyTargetBook.totalCopies} total copies ({copyTargetBook.availableCopies} available)
               </p>
             </div>

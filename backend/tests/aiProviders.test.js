@@ -1,15 +1,39 @@
+// ---------------------------------------------------------------------------
+// aiProviders.test.js
+// ---------------------------------------------------------------------------
+// This file MUST NOT require('./providerIsolation') because providerIsolation
+// stubs out @google/genai with a hard-throwing mock. Instead we define our
+// own controlled stub that lets us feed responses per-test via mockGenerate.
+//
+// The { virtual: true } flag matches the declaration style used in
+// providerIsolation.js, ensuring our mock wins regardless of test ordering.
+// ---------------------------------------------------------------------------
+
 const mockGenerate = jest.fn();
-jest.mock('@google/genai', () => ({ GoogleGenAI: jest.fn(() => ({ models: { generateContent: mockGenerate } })) }));
+
+jest.mock(
+  '@google/genai',
+  () => ({ GoogleGenAI: jest.fn(() => ({ models: { generateContent: mockGenerate } })) }),
+  { virtual: true },
+);
 jest.mock('../src/models', () => ({ Book: { find: jest.fn(), findOne: jest.fn() }, Copy: {} }));
 jest.mock('../src/models/ShelfAudit', () => ({ create: jest.fn() }));
-const { generateStructured, identifyBook } = require('../src/services/aiService');
+
+// Require service modules AFTER mocks are in place (jest.mock is hoisted so
+// by the time this runs the mocks are already registered).
+const { generateStructured, identifyBook, _resetForTesting } = require('../src/services/aiService');
 const { lookupISBN } = require('../src/services/isbnLookupService');
 const { Book } = require('../src/models');
+
 const image = Buffer.from('unit image');
 const extracted = { title: null, authors: [], isbn: null, confidence: 'low' };
 
 beforeEach(() => {
   jest.clearAllMocks();
+  // Flush the lazy _genAI singleton so getGenAI() calls new GoogleGenAI()
+  // again and picks up the mocked constructor, even if another suite ran
+  // first and populated the singleton with a different (real or throwing) instance.
+  _resetForTesting();
   process.env.GEMINI_API_KEY = 'unit-test-only';
   process.env.GEMINI_MODEL = 'gemini-3.5-flash';
   global.fetch = jest.fn();

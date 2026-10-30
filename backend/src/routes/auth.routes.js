@@ -1,6 +1,10 @@
 const express = require('express');
 const { body } = require('express-validator');
 const {
+  startOnboarding,
+  updateOnboardingStep,
+  completeOnboarding,
+  oauthSignIn,
   register,
   login,
   refreshToken,
@@ -87,6 +91,11 @@ const changePasswordValidation = [
 ];
 
 // Route definitions
+router.post('/onboarding/start', logAction('ONBOARDING_START', 'User'), startOnboarding);
+router.patch('/onboarding/step', logAction('ONBOARDING_STEP', 'User'), updateOnboardingStep);
+router.post('/onboarding/complete', logAction('ONBOARDING_COMPLETE', 'User'), completeOnboarding);
+router.post('/oauth', logAction('OAUTH_SIGNIN', 'User'), oauthSignIn);
+
 router.post('/register', registerValidation, logAction('USER_REGISTER', 'User'), register);
 router.post('/login', loginValidation, logAction('USER_LOGIN', 'User'), login);
 router.post('/refresh-token', refreshToken);

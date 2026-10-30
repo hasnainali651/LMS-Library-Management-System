@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function AuthLayout({
   children,
@@ -12,6 +13,11 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 bg-[var(--neo-bg)] text-[var(--neo-text)] relative select-none transition-colors">
+      {/* Theme Switcher in top right */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
+
       {/* Brand Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -51,7 +57,7 @@ export default function AuthLayout({
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 w-full max-w-md sm:max-w-lg"
       >
-        <div className="neo-card p-6 sm:p-9 rounded-[var(--neo-r-xl)] [box-shadow:var(--neo-raised-lg)] border border-[var(--neo-border-light)] text-[var(--neo-text)]">
+        <div className="neo-card p-6 sm:p-9 rounded-[var(--neo-r-xl)] [box-shadow:var(--neo-raised-lg)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] text-[var(--neo-text)]">
           {children}
         </div>
       </motion.div>

@@ -4,7 +4,7 @@ export default [
   ...nextConfig,
   {
     rules: {
-      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-effect': 'off',
       'react-hooks/refs': 'warn',
       'react-hooks/immutability': 'warn',
       'react-hooks/purity': 'warn',

@@ -46,9 +46,9 @@ export const FineReceiptModal: React.FC<FineReceiptModalProps> = ({
 
   const receiptNumber =
     fine.receiptNumber ||
-    `RCP-${fine.id?.slice(-6) || fine._id?.slice(-6) || Date.now().toString().slice(-8)}`;
+    `RCP-${fine.id?.slice(-6) || fine._id?.slice(-6) || '000000'}`;
 
-  const fineDate = fine.paidAt || fine.createdAt || fine.fineDate || new Date().toISOString();
+  const fineDate = fine.paidAt || fine.createdAt || fine.fineDate || '';
   let formattedDate = 'Recent';
   try {
     formattedDate = format(parseISO(fineDate), 'MMMM d, yyyy h:mm a');

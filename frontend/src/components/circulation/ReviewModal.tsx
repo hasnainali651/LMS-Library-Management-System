@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Star, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Modal } from '@/components/ui/Modal';
@@ -121,7 +122,7 @@ const ReviewForm: React.FC<ReviewModalProps> = ({
         {/* Book Header */}
         <div className="flex items-center gap-3 p-3 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] border border-[var(--neo-border-light)] [box-shadow:var(--neo-flat)]">
           {coverImage ? (
-            <img src={coverImage} alt={bookTitle} className="w-10 h-14 object-cover rounded shadow-sm" />
+            <Image src={coverImage} alt={bookTitle} width={40} height={56} className="w-10 h-14 object-cover rounded shadow-sm" unoptimized />
           ) : (
             <div className="w-10 h-14 rounded bg-[var(--neo-card)] text-[var(--neo-accent)] flex items-center justify-center border border-[var(--neo-border-light)]">
               <Star className="w-4 h-4" />

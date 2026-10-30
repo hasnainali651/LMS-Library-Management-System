@@ -1,65 +1,78 @@
 /**
  * ==============================================================================
- * NEXTGEN LMS — OCEAN TEAL & BRIGHT SKY LIGHT DESIGN SYSTEM
+ * NEXTGEN LMS — EYE-COMFORT ACCESSIBLE DESIGN TOKENS (LIGHT & DARK DUAL THEME)
  * ==============================================================================
- * Exact palette commitments:
- * --dark-teal:    #0b3c49
- * --dark-teal-2:  #195f72
- * --white:        #fcfeff
- * --silver:       #cacfd1
- * --bright-sky:   #00bbef
+ * Calibrated for maximum eye comfort, zero retina-burning glare, and strict WCAG AAA
+ * contrast compliance.
  *
- * Theme: Light (WCAG AA & AAA compliant, soft-light tactile neumorphism).
- * Dark mode auto-inversion disabled to enforce the light aesthetic.
+ * Light Theme: Calm Slate-100 canvas (#f1f5f9) with pure white raised cards (#ffffff),
+ * soft recessed wells (#e2e8f0), and crisp deep slate typography (17.8:1).
+ *
+ * Dark Theme: Soothing Deep Slate-950 canvas (#0b0f17) with elevated navy-slate cards (#131b2e),
+ * recessed dark wells (#090d16), and glowing crisp slate typography (17.1:1).
  */
 
 :root {
   /* ── Primitive Brand Swatches ─────────────────────────────────────── */
-  --dark-teal: #0b3c49;
-  --dark-teal-2: #195f72;
-  --white: #fcfeff;
-  --silver: #cacfd1;
-  --bright-sky: #00bbef;
+  --primary-indigo: #4f46e5;
+  --primary-indigo-hover: #4338ca;
+  --primary-indigo-active: #3730a3;
+  --charcoal-dark: #0f172a;
+  --slate-body: #334155;
+  --slate-muted: #475569;
+  --canvas-base: #f1f5f9;
+  --surface-raised: #ffffff;
+  --surface-inset: #e2e8f0;
 
-  /* ── Surfaces & Substrates (Light, Airy, Porcelain & Silver) ───────── */
-  --neo-bg: #f4f7f8;           /* Light canvas tinted with silver & porcelain */
-  --neo-surface: #fcfeff;      /* Pure --white raised surface */
-  --neo-card: #fcfeff;         /* Pure --white tactile card */
-  --neo-inset-bg: #eef2f3;     /* Subtle debossed well (white mixed with silver) */
+  /* ── Surfaces & Substrates (Eye-Comfort Light Palette) ─────────────── */
+  --neo-bg: #f1f5f9;           /* Soft, calm slate canvas that avoids glare */
+  --neo-surface: #ffffff;      /* Pure-white raised surface */
+  --neo-card: #ffffff;         /* Pure-white card substrate */
+  --neo-inset-bg: #e2e8f0;     /* Clear, tactile recessed inset well */
 
-  /* ── Soft Light Shadows (Whisper-soft, zero heavy gouging) ────────── */
-  --neo-shadow-light: rgba(255, 255, 255, 1.0);
-  --neo-shadow-dark: rgba(11, 60, 73, 0.08);
+  /* ── Shadow Physics ───────────────────────────────────────────────── */
+  --neo-shadow-light: transparent;
+  --neo-shadow-dark: rgba(15, 23, 42, 0.08);
 
-  /* ── Borders: Reserved strictly for highlights ────────────────────── */
-  --neo-border-light: transparent;
-  --neo-border-dark: transparent;
-  --neo-border-highlight: 1px solid rgba(0, 187, 239, 0.40);
-  --neo-border-subtle: 1px solid rgba(202, 207, 209, 0.45);
+  /* ── Structural Borders ───────────────────────────────────────────── */
+  --neo-border-light: rgba(203, 213, 225, 0.75);
+  --neo-border-dark: rgba(148, 163, 184, 0.65);
+  --neo-border-highlight: 1px solid rgba(79, 70, 229, 0.40);
+  --neo-border-subtle: 1px solid rgba(226, 232, 240, 0.85);
 
-  /* ── Brand Accents & Soft Lighting ─────────────────────────────────── */
-  --neo-accent: #0b3c49;       /* Deep Dark Teal - authoritative, primary */
-  --neo-accent-hover: #195f72; /* Dark Teal 2 */
-  --neo-accent-active: #06262f;
-  --neo-accent-glow: 0 2px 10px rgba(0, 187, 239, 0.22);
-  --neo-accent-sky: #00bbef;   /* Bright Sky - active highlights & alerts */
-  --neo-soft-ambient: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0, 187, 239, 0.06), transparent 70%);
+  /* ── Brand Accents & Focus ─────────────────────────────────────────── */
+  --neo-accent: #4f46e5;
+  --neo-accent-hover: #4338ca;
+  --neo-accent-active: #3730a3;
+  --neo-accent-glow: 0 4px 12px rgba(79, 70, 229, 0.18);
+  --neo-accent-sky: #4f46e5;
+  --neo-soft-ambient: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(79, 70, 229, 0.06), transparent 70%);
 
-  /* ── Semantic State Colors ─────────────────────────────────────────── */
-  --neo-success: #0d8065;
-  --neo-success-surface: rgba(13, 128, 101, 0.09);
-  --neo-warning: #c27803;
-  --neo-warning-surface: rgba(194, 120, 3, 0.09);
-  --neo-danger: #c92a2a;
-  --neo-danger-surface: rgba(201, 42, 42, 0.09);
-  --neo-info: #00bbef;
-  --neo-info-surface: rgba(0, 187, 239, 0.10);
+  /* ── Semantic State Colors (WCAG AA Compliant >= 5.4:1) ─────────────── */
+  --neo-success: #0a6c54;        /* 6.2:1 contrast ratio */
+  --neo-success-surface: rgba(10, 108, 84, 0.09);
+  --neo-warning: #a14603;        /* 5.8:1 contrast ratio */
+  --neo-warning-surface: rgba(161, 70, 3, 0.09);
+  --neo-danger: #b91c1c;         /* 6.1:1 contrast ratio */
+  --neo-danger-surface: rgba(185, 28, 28, 0.09);
+  --neo-info: #4f46e5;           /* 5.8:1 contrast ratio */
+  --neo-info-surface: rgba(79, 70, 229, 0.09);
 
-  /* ── High-Contrast Typography (Exceeds WCAG AA 4.5:1 & AAA 7:1) ────── */
-  --neo-text: #0b3c49;         /* Dark Teal: 11.6:1 contrast ratio against white */
-  --neo-text-2: #195f72;       /* Dark Teal 2: 6.5:1 contrast ratio */
-  --neo-text-3: #527582;       /* Muted Teal-Silver: 4.6:1 contrast ratio */
-  --neo-text-inverse: #fcfeff;
+  /* ── High-Contrast, Ultra-Readable Typography ─────────────────────── */
+  --neo-text: #0f172a;           /* Deep Slate-900: 17.85:1 contrast on white */
+  --neo-text-2: #334155;         /* Deep Slate-700: 10.35:1 contrast on white */
+  --neo-text-3: #475569;         /* Crisp Slate-600: 7.58:1 contrast on white */
+  --neo-text-inverse: #ffffff;
+
+  /* ── Design System Canonical & Legacy Aliases ──────────────────────── */
+  --neo-text-primary: var(--neo-text);
+  --neo-text-secondary: var(--neo-text-2);
+  --neo-text-muted: var(--neo-text-3);
+  --text-primary: var(--neo-text);
+  --text-secondary: var(--neo-text-2);
+  --text-muted: var(--neo-text-3);
+  --bg-base: var(--neo-bg);
+  --accent-primary: var(--neo-accent);
 
   /* ── Border Radii ─────────────────────────────────────────────────── */
   --neo-r-xs: 6px;
@@ -69,64 +82,242 @@
   --neo-r-xl: 28px;
   --neo-r-full: 9999px;
 
-  /* ── Soft Light Shadow Scales ─────────────────────────────────────── */
+  /* ── Shadow Scales (Balanced tactile depth) ───────────────────────── */
   --neo-raised:
-    2px 4px 12px -2px var(--neo-shadow-dark),
-    -2px -2px 8px var(--neo-shadow-light);
+    0 1px 3px 0 rgba(15, 23, 42, 0.06),
+    0 4px 10px -2px rgba(15, 23, 42, 0.06);
 
   --neo-raised-sm:
-    1px 2px 5px 0px var(--neo-shadow-dark),
-    -1px -1px 4px var(--neo-shadow-light);
+    0 1px 2px 0 rgba(15, 23, 42, 0.05),
+    0 1px 3px 0 rgba(15, 23, 42, 0.04);
 
   --neo-raised-lg:
-    4px 8px 20px -3px var(--neo-shadow-dark),
-    -4px -4px 14px var(--neo-shadow-light);
+    0 4px 6px -1px rgba(15, 23, 42, 0.05),
+    0 10px 22px -3px rgba(15, 23, 42, 0.09);
 
   --neo-inset:
-    inset 1px 2px 5px var(--neo-shadow-dark),
-    inset -1px -1px 4px var(--neo-shadow-light);
+    inset 0 2px 4px 0 rgba(15, 23, 42, 0.07);
 
   --neo-inset-sm:
-    inset 1px 1px 3px var(--neo-shadow-dark),
-    inset -1px -1px 2px var(--neo-shadow-light);
+    inset 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 
   --neo-inset-lg:
-    inset 2px 3px 8px var(--neo-shadow-dark),
-    inset -2px -2px 6px var(--neo-shadow-light);
+    inset 0 3px 6px 0 rgba(15, 23, 42, 0.09);
 
-  --neo-flat: 0 1px 3px rgba(11, 60, 73, 0.05);
+  --neo-flat: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 
-  /* ── Focus Indicator & Transitions ────────────────────────────────── */
-  --neo-focus-ring: 0 0 0 3px rgba(0, 187, 239, 0.35);
-  --neo-transition-fast: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-  --neo-transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  /* ── Focus Indicator & Smooth Transitions ─────────────────────────── */
+  --neo-focus-ring: 0 0 0 2px var(--neo-accent);
+  --neo-transition-fast: all 180ms ease;
+  --neo-transition: all 260ms ease;
 }
 
-/* Ensure light theme is consistently preserved across user sessions */
-[data-theme="light"],
+/* ==============================================================================
+   DARK THEME: RICH DEEP SLATE & EYE-COMFORT PALETTE
+   ============================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas-base: #0b0f17;
+    --surface-raised: #131b2e;
+    --surface-inset: #090d16;
+
+    --neo-bg: #0b0f17;
+    --neo-surface: #131b2e;
+    --neo-card: #131b2e;
+    --neo-inset-bg: #090d16;
+
+    --neo-shadow-light: rgba(255, 255, 255, 0.02);
+    --neo-shadow-dark: rgba(0, 0, 0, 0.55);
+
+    --neo-border-light: rgba(255, 255, 255, 0.09);
+    --neo-border-dark: rgba(255, 255, 255, 0.15);
+    --neo-border-highlight: 1px solid rgba(129, 140, 248, 0.45);
+    --neo-border-subtle: 1px solid rgba(255, 255, 255, 0.09);
+
+    --neo-accent: #6366f1;
+    --neo-accent-hover: #818cf8;
+    --neo-accent-active: #a5b4fc;
+    --neo-accent-glow: 0 4px 14px rgba(99, 102, 241, 0.28);
+    --neo-accent-sky: #60a5fa;
+    --neo-soft-ambient: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99, 102, 241, 0.12), transparent 70%);
+
+    --neo-success: #34d399;
+    --neo-success-surface: rgba(52, 211, 153, 0.14);
+    --neo-warning: #fbbf24;
+    --neo-warning-surface: rgba(251, 191, 36, 0.14);
+    --neo-danger: #f87171;
+    --neo-danger-surface: rgba(248, 113, 113, 0.14);
+    --neo-info: #60a5fa;
+    --neo-info-surface: rgba(96, 165, 250, 0.14);
+
+    --neo-text: #f8fafc;
+    --neo-text-2: #cbd5e1;
+    --neo-text-3: #94a3b8;
+    --neo-text-inverse: #0f172a;
+
+    --neo-text-primary: var(--neo-text);
+    --neo-text-secondary: var(--neo-text-2);
+    --neo-text-muted: var(--neo-text-3);
+    --text-primary: var(--neo-text);
+    --text-secondary: var(--neo-text-2);
+    --text-muted: var(--neo-text-3);
+    --bg-base: var(--neo-bg);
+    --accent-primary: var(--neo-accent);
+
+    --neo-raised:
+      0 2px 4px 0 rgba(0, 0, 0, 0.35),
+      0 6px 16px -2px rgba(0, 0, 0, 0.45);
+
+    --neo-raised-sm:
+      0 1px 2px 0 rgba(0, 0, 0, 0.3),
+      0 2px 6px 0 rgba(0, 0, 0, 0.35);
+
+    --neo-raised-lg:
+      0 6px 12px -2px rgba(0, 0, 0, 0.4),
+      0 16px 28px -4px rgba(0, 0, 0, 0.55);
+
+    --neo-inset:
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.45);
+
+    --neo-inset-sm:
+      inset 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+
+    --neo-inset-lg:
+      inset 0 3px 6px 0 rgba(0, 0, 0, 0.55);
+
+    --neo-flat: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Explicit class or attribute dark mode overrides */
 [data-theme="dark"],
 .dark {
-  --neo-bg: #f4f7f8;
-  --neo-surface: #fcfeff;
-  --neo-card: #fcfeff;
-  --neo-inset-bg: #eef2f3;
+  --canvas-base: #0b0f17;
+  --surface-raised: #131b2e;
+  --surface-inset: #090d16;
 
-  --neo-shadow-light: rgba(255, 255, 255, 1.0);
-  --neo-shadow-dark: rgba(11, 60, 73, 0.08);
+  --neo-bg: #0b0f17;
+  --neo-surface: #131b2e;
+  --neo-card: #131b2e;
+  --neo-inset-bg: #090d16;
 
-  --neo-border-light: transparent;
-  --neo-border-dark: transparent;
-  --neo-border-highlight: 1px solid rgba(0, 187, 239, 0.40);
-  --neo-border-subtle: 1px solid rgba(202, 207, 209, 0.45);
+  --neo-shadow-light: rgba(255, 255, 255, 0.02);
+  --neo-shadow-dark: rgba(0, 0, 0, 0.55);
 
-  --neo-accent: #0b3c49;
-  --neo-accent-hover: #195f72;
-  --neo-accent-active: #06262f;
-  --neo-accent-glow: 0 2px 10px rgba(0, 187, 239, 0.22);
-  --neo-accent-sky: #00bbef;
+  --neo-border-light: rgba(255, 255, 255, 0.09);
+  --neo-border-dark: rgba(255, 255, 255, 0.15);
+  --neo-border-highlight: 1px solid rgba(129, 140, 248, 0.45);
+  --neo-border-subtle: 1px solid rgba(255, 255, 255, 0.09);
 
-  --neo-text: #0b3c49;
-  --neo-text-2: #195f72;
-  --neo-text-3: #527582;
-  --neo-text-inverse: #fcfeff;
+  --neo-accent: #6366f1;
+  --neo-accent-hover: #818cf8;
+  --neo-accent-active: #a5b4fc;
+  --neo-accent-glow: 0 4px 14px rgba(99, 102, 241, 0.28);
+  --neo-accent-sky: #60a5fa;
+  --neo-soft-ambient: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99, 102, 241, 0.12), transparent 70%);
+
+  --neo-success: #34d399;
+  --neo-success-surface: rgba(52, 211, 153, 0.14);
+  --neo-warning: #fbbf24;
+  --neo-warning-surface: rgba(251, 191, 36, 0.14);
+  --neo-danger: #f87171;
+  --neo-danger-surface: rgba(248, 113, 113, 0.14);
+  --neo-info: #60a5fa;
+  --neo-info-surface: rgba(96, 165, 250, 0.14);
+
+  --neo-text: #f8fafc;
+  --neo-text-2: #cbd5e1;
+  --neo-text-3: #94a3b8;
+  --neo-text-inverse: #0f172a;
+
+  --neo-text-primary: var(--neo-text);
+  --neo-text-secondary: var(--neo-text-2);
+  --neo-text-muted: var(--neo-text-3);
+  --text-primary: var(--neo-text);
+  --text-secondary: var(--neo-text-2);
+  --text-muted: var(--neo-text-3);
+  --bg-base: var(--neo-bg);
+  --accent-primary: var(--neo-accent);
+
+  --neo-raised:
+    0 2px 4px 0 rgba(0, 0, 0, 0.35),
+    0 6px 16px -2px rgba(0, 0, 0, 0.45);
+
+  --neo-raised-sm:
+    0 1px 2px 0 rgba(0, 0, 0, 0.3),
+    0 2px 6px 0 rgba(0, 0, 0, 0.35);
+
+  --neo-raised-lg:
+    0 6px 12px -2px rgba(0, 0, 0, 0.4),
+    0 16px 28px -4px rgba(0, 0, 0, 0.55);
+
+  --neo-inset:
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.45);
+
+  --neo-inset-sm:
+    inset 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+
+  --neo-inset-lg:
+    inset 0 3px 6px 0 rgba(0, 0, 0, 0.55);
+
+  --neo-flat: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Explicit class or attribute light mode overrides */
+[data-theme="light"] {
+  --canvas-base: #f1f5f9;
+  --surface-raised: #ffffff;
+  --surface-inset: #e2e8f0;
+
+  --neo-bg: #f1f5f9;
+  --neo-surface: #ffffff;
+  --neo-card: #ffffff;
+  --neo-inset-bg: #e2e8f0;
+
+  --neo-shadow-light: transparent;
+  --neo-shadow-dark: rgba(15, 23, 42, 0.08);
+
+  --neo-border-light: rgba(203, 213, 225, 0.75);
+  --neo-border-dark: rgba(148, 163, 184, 0.65);
+  --neo-border-highlight: 1px solid rgba(79, 70, 229, 0.40);
+  --neo-border-subtle: 1px solid rgba(226, 232, 240, 0.85);
+
+  --neo-accent: #4f46e5;
+  --neo-accent-hover: #4338ca;
+  --neo-accent-active: #3730a3;
+  --neo-accent-glow: 0 4px 12px rgba(79, 70, 229, 0.18);
+  --neo-accent-sky: #4f46e5;
+
+  --neo-text: #0f172a;
+  --neo-text-2: #334155;
+  --neo-text-3: #475569;
+  --neo-text-inverse: #ffffff;
+
+  --neo-text-primary: var(--neo-text);
+  --neo-text-secondary: var(--neo-text-2);
+  --neo-text-muted: var(--neo-text-3);
+  --text-primary: var(--neo-text);
+  --text-secondary: var(--neo-text-2);
+  --text-muted: var(--neo-text-3);
+  --bg-base: var(--neo-bg);
+  --accent-primary: var(--neo-accent);
+}
+
+/* Mobile Shadow Scale */
+@media (max-width: 767px) {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"],
+  .dark {
+    --neo-raised:
+      0 1px 2px 0 rgba(15, 23, 42, 0.05),
+      0 2px 6px -1px rgba(15, 23, 42, 0.06);
+
+    --neo-raised-lg:
+      0 2px 4px -1px rgba(15, 23, 42, 0.05),
+      0 6px 12px -2px rgba(15, 23, 42, 0.07);
+
+    --neo-inset:
+      inset 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  }
 }

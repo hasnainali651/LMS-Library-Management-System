@@ -9,6 +9,8 @@ import { useSocketEvents } from "@/hooks/useSocketEvents";
 import { ToastProvider } from "@/components/providers/ToastProvider";
 import { QueryErrorBoundary } from "@/components/providers/QueryErrorBoundary";
 import { GlobalExperience } from "@/components/layout/GlobalExperience";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
 
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { user, accessToken, setUser } = useAuthStore();
@@ -66,7 +68,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     for (const key of ["books", "book", "search", "categories"]) {
       client.setQueryDefaults([key], {
-        staleTime: 5 * 60 * 1000,
+        staleTime: 5 * 60 * 1000, 
         gcTime: 10 * 60 * 1000,
       });
     }
@@ -89,13 +91,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthInitializer>
-        <SocketSubscriber />
-        <GlobalExperience />
-        <QueryErrorBoundary>{children}</QueryErrorBoundary>
-        <ToastProvider />
-      </AuthInitializer>
-    </QueryClientProvider>
+    <NextAuthProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthInitializer>
+            <SocketSubscriber />
+            <GlobalExperience />
+            <QueryErrorBoundary>{children}</QueryErrorBoundary>
+            <ToastProvider />
+          </AuthInitializer>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </NextAuthProvider>
   );
 }

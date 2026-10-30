@@ -46,7 +46,7 @@ export function Table<T extends Record<string, any>>({
 }: TableProps<T>) {
   if (isLoading) {
     return (
-      <div className={cn('w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] overflow-hidden [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)]', className)}>
+      <div className={cn('w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] overflow-hidden [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)]', className)}>
         <Skeleton variant="table" rows={skeletonRows} cols={columns.length} />
       </div>
     );
@@ -54,7 +54,7 @@ export function Table<T extends Record<string, any>>({
 
   if (!data || data.length === 0) {
     return (
-      <div className={cn('w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] p-8 [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)]', className)}>
+      <div className={cn('w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] p-8 [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)]', className)}>
         <EmptyState
           title={emptyTitle}
           description={emptyDescription}
@@ -67,7 +67,7 @@ export function Table<T extends Record<string, any>>({
   return (
     <div
       className={cn(
-        'w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] text-[var(--neo-text)] overflow-hidden [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)]',
+        'w-full rounded-[var(--neo-r-lg)] bg-[var(--neo-card)] text-[var(--neo-text)] overflow-hidden [box-shadow:var(--neo-raised)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)]',
         className
       )}
     >

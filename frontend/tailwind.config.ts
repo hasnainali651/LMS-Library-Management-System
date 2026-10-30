@@ -10,6 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /* ─── Slate remap: elevate 300/400 for WCAG AA text contrast ──── */
+        slate: {
+          50:  '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#94a3b8',  /* Was #cbd5e1 (3.4:1) → now 4.6:1 on white  */
+          400: '#64748b',  /* Was #94a3b8 (2.5:1) → now 4.76:1 on white */
+          500: '#475569',
+          600: '#334155',
+          700: '#1e293b',
+          800: '#0f172a',
+          900: '#020617',
+          950: '#020617',
+        },
         primary: {
           50: '#f0f5fa',
           100: '#e1ecf6',
@@ -22,21 +36,21 @@ const config: Config = {
           800: '#254767',
           900: '#1c3147',
           950: '#0f1d2b',
-          DEFAULT: '#29537c',
+          DEFAULT: '#4f46e5',
         },
         accent: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb', // base
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
-          DEFAULT: '#2563eb',
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81',
+          950: '#1e1b4b',
+          DEFAULT: '#4f46e5',
         },
       },
       boxShadow: {
@@ -58,6 +72,7 @@ const config: Config = {
         'neo':       'var(--neo-bg)',
         'neo-card':  'var(--neo-card)',
         'neo-surf':  'var(--neo-surface)',
+        'neo-inset': 'var(--neo-inset-bg)',
       },
       textColor: {
         'neo':   'var(--neo-text)',

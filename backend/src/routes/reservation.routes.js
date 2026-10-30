@@ -11,7 +11,7 @@ const {
 } = require('../controllers/reservation.controller');
 
 const { protect } = require('../middleware/auth');
-const { isLibrarian } = require('../middleware/roles');
+const { isLibrarian, requireVerifiedEmail } = require('../middleware/roles');
 const { validate } = require('../middleware/validate');
 const { logAction } = require('../middleware/auditLog');
 
@@ -26,7 +26,7 @@ const createReservationValidation = [
 router.use(protect);
 
 // 1. Create & Cancel & Collect
-router.post('/', createReservationValidation, logAction('CREATE_RESERVATION', 'Reservation'), createReservation);
+router.post('/', requireVerifiedEmail, createReservationValidation, logAction('CREATE_RESERVATION', 'Reservation'), createReservation);
 router.delete('/:id', logAction('CANCEL_RESERVATION', 'Reservation'), cancelReservation);
 router.patch('/:id/collect', isLibrarian, logAction('COLLECT_RESERVATION', 'Reservation'), markCollected);
 

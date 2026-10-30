@@ -14,7 +14,7 @@ const {
 } = require('../controllers/circulation.controller');
 
 const { protect } = require('../middleware/auth');
-const { isLibrarian } = require('../middleware/roles');
+const { isLibrarian, requireVerifiedEmail } = require('../middleware/roles');
 const { validate } = require('../middleware/validate');
 const { logAction } = require('../middleware/auditLog');
 
@@ -57,8 +57,8 @@ router.use(protect);
 // 1. Issue, Return, Renew Operations
 router.post('/issue', isLibrarian, issueValidation, logAction('ISSUE_BOOK', 'Transaction'), issueBook);
 router.post('/return', isLibrarian, returnValidation, logAction('RETURN_BOOK', 'Transaction'), returnBook);
-router.post('/renew', renewValidation, logAction('RENEW_LOAN', 'Transaction'), renewLoan);
-router.patch('/renew', renewValidation, logAction('RENEW_LOAN', 'Transaction'), renewLoan);
+router.post('/renew', requireVerifiedEmail, renewValidation, logAction('RENEW_LOAN', 'Transaction'), renewLoan);
+router.patch('/renew', requireVerifiedEmail, renewValidation, logAction('RENEW_LOAN', 'Transaction'), renewLoan);
 
 // 2. Active & Overdue Queries
 router.get('/active', isLibrarian, getActiveLoans);

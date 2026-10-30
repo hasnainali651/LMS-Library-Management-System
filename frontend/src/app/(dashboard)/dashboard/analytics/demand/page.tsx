@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import {
   ShoppingCart,
   Archive,
@@ -145,9 +146,12 @@ export default function DemandPage() {
       render: (b) => (
         <div className="flex items-center gap-3">
           {b.coverImage ? (
-            <img
+            <Image
               src={b.coverImage}
-              alt=""
+              alt={b.title || 'Book cover'}
+              width={32}
+              height={40}
+              unoptimized
               className="w-8 h-10 object-cover rounded shadow-sm shrink-0"
             />
           ) : (
@@ -159,7 +163,7 @@ export default function DemandPage() {
             <p className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[200px]">
               {b.title}
             </p>
-            <p className="text-slate-400 text-[11px] truncate max-w-[200px] mt-0.5">
+            <p className="text-slate-600 dark:text-slate-400 font-medium text-[11px] truncate max-w-[200px] mt-0.5">
               {authorStr(b.authors)}
             </p>
           </div>
@@ -181,12 +185,12 @@ export default function DemandPage() {
       key: 'availableCopies',
       header: 'Available / Total',
       render: (b) => (
-        <span className="tabular-nums text-slate-600 dark:text-slate-300">
+        <span className="tabular-nums text-slate-700 dark:text-slate-300 font-medium">
           <span
             className={
               b.availableCopies === 0
                 ? 'text-rose-600 dark:text-rose-400 font-bold'
-                : 'text-emerald-600 dark:text-emerald-400 font-bold'
+                : 'text-emerald-700 dark:text-emerald-400 font-bold'
             }
           >
             {b.availableCopies}
@@ -210,7 +214,7 @@ export default function DemandPage() {
       key: 'shelfLocation',
       header: 'Shelf',
       render: (b) => (
-        <span className="font-mono text-[11px] text-slate-500">
+        <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
           {b.shelfLocation ?? '—'}
         </span>
       ),
@@ -226,9 +230,12 @@ export default function DemandPage() {
       render: (b) => (
         <div className="flex items-center gap-3">
           {b.coverImage ? (
-            <img
+            <Image
               src={b.coverImage}
-              alt=""
+              alt={b.title || 'Book cover'}
+              width={32}
+              height={40}
+              unoptimized
               className="w-8 h-10 object-cover rounded shadow-sm shrink-0"
             />
           ) : (
@@ -240,7 +247,7 @@ export default function DemandPage() {
             <p className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[200px]">
               {b.title}
             </p>
-            <p className="text-slate-400 text-[11px] truncate max-w-[200px] mt-0.5">
+            <p className="text-slate-600 dark:text-slate-400 font-medium text-[11px] truncate max-w-[200px] mt-0.5">
               {authorStr(b.authors)}
             </p>
           </div>
@@ -252,7 +259,7 @@ export default function DemandPage() {
       header: 'Copies',
       sortable: true,
       render: (b) => (
-        <span className="tabular-nums font-semibold text-slate-600 dark:text-slate-300">
+        <span className="tabular-nums font-semibold text-slate-700 dark:text-slate-300">
           {b.totalCopies}
         </span>
       ),
@@ -262,7 +269,7 @@ export default function DemandPage() {
       header: 'Last Borrowed',
       sortable: true,
       render: (b) => (
-        <span className="font-mono text-[11px] text-slate-500">
+        <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
           {b.lastBorrowDate ? b.lastBorrowDate : 'Never'}
         </span>
       ),
@@ -271,7 +278,7 @@ export default function DemandPage() {
       key: 'shelfLocation',
       header: 'Shelf',
       render: (b) => (
-        <span className="font-mono text-[11px] text-slate-500">
+        <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
           {b.shelfLocation ?? '—'}
         </span>
       ),
@@ -339,7 +346,7 @@ export default function DemandPage() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Demand & Idle Analysis
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
             Actionable procurement and weeding recommendations based on real circulation data.
           </p>
         </div>
@@ -398,7 +405,7 @@ export default function DemandPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${activeTab === tab.key
                 ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
               }`}
           >
             {tab.icon}
@@ -423,7 +430,7 @@ export default function DemandPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>High-Demand Books — Procurement Recommendations</CardTitle>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 Suggested qty = reservations − available + 1
               </p>
             </div>

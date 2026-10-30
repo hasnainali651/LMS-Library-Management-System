@@ -38,6 +38,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ErrorState } from '@/components/ui/ErrorState';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 // ─── Category definition ──────────────────────────────────────────────────────
 interface CategoryTile {
@@ -77,32 +78,32 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_GRADIENTS: Record<string, [string, string, string]> = {
-  'Computer Science': ['from-blue-600 to-indigo-700', 'text-blue-100', 'bg-blue-900/30'],
-  'Fiction': ['from-violet-600 to-purple-700', 'text-violet-100', 'bg-violet-900/30'],
-  'Science': ['from-cyan-600 to-sky-700', 'text-cyan-100', 'bg-cyan-900/30'],
-  'History': ['from-amber-600 to-orange-700', 'text-amber-100', 'bg-amber-900/30'],
-  'Mathematics': ['from-emerald-600 to-teal-700', 'text-emerald-100', 'bg-emerald-900/30'],
-  'Psychology': ['from-pink-600 to-rose-700', 'text-pink-100', 'bg-pink-900/30'],
-  'Geography': ['from-teal-600 to-cyan-700', 'text-teal-100', 'bg-teal-900/30'],
-  'Economics': ['from-yellow-600 to-amber-700', 'text-yellow-100', 'bg-yellow-900/30'],
-  'Engineering': ['from-slate-600 to-zinc-700', 'text-slate-100', 'bg-slate-900/30'],
-  'Philosophy': ['from-indigo-600 to-violet-700', 'text-indigo-100', 'bg-indigo-900/30'],
-  'Literature': ['from-rose-600 to-pink-700', 'text-rose-100', 'bg-rose-900/30'],
-  'Arts': ['from-fuchsia-600 to-purple-700', 'text-fuchsia-100', 'bg-fuchsia-900/30'],
-  'Music': ['from-purple-600 to-indigo-700', 'text-purple-100', 'bg-purple-900/30'],
-  'Medicine': ['from-red-600 to-rose-700', 'text-red-100', 'bg-red-900/30'],
-  'Law': ['from-slate-700 to-gray-800', 'text-slate-100', 'bg-slate-900/30'],
-  'Biology': ['from-green-600 to-emerald-700', 'text-green-100', 'bg-green-900/30'],
-  'Physics': ['from-sky-600 to-blue-700', 'text-sky-100', 'bg-sky-900/30'],
-  'Chemistry': ['from-orange-600 to-amber-700', 'text-orange-100', 'bg-orange-900/30'],
-  'Languages': ['from-teal-500 to-green-600', 'text-teal-100', 'bg-teal-900/30'],
-  'Business': ['from-blue-700 to-sky-600', 'text-blue-100', 'bg-blue-900/30'],
-  'Drama': ['from-yellow-500 to-orange-600', 'text-yellow-100', 'bg-yellow-900/30'],
-  'Astronomy': ['from-indigo-800 to-violet-900', 'text-indigo-100', 'bg-indigo-900/30'],
-  'Travel': ['from-emerald-500 to-cyan-600', 'text-emerald-100', 'bg-emerald-900/30'],
-  'Sociology': ['from-amber-700 to-yellow-600', 'text-amber-100', 'bg-amber-900/30'],
-  'Religion': ['from-violet-700 to-purple-800', 'text-violet-100', 'bg-violet-900/30'],
-  'Self-Help': ['from-rose-500 to-pink-600', 'text-rose-100', 'bg-rose-900/30'],
+  'Computer Science': ['from-blue-700 to-sky-800', 'text-blue-100', 'bg-blue-900/30'],
+  'Fiction': ['from-rose-800 to-amber-900', 'text-amber-100', 'bg-amber-950/30'],
+  'Science': ['from-cyan-700 to-teal-800', 'text-cyan-100', 'bg-cyan-900/30'],
+  'History': ['from-amber-700 to-stone-800', 'text-amber-100', 'bg-amber-900/30'],
+  'Mathematics': ['from-emerald-700 to-teal-800', 'text-emerald-100', 'bg-emerald-900/30'],
+  'Psychology': ['from-rose-700 to-stone-800', 'text-rose-100', 'bg-rose-900/30'],
+  'Geography': ['from-teal-700 to-cyan-800', 'text-teal-100', 'bg-teal-900/30'],
+  'Economics': ['from-yellow-700 to-amber-800', 'text-yellow-100', 'bg-yellow-900/30'],
+  'Engineering': ['from-slate-700 to-zinc-800', 'text-slate-100', 'bg-slate-900/30'],
+  'Philosophy': ['from-stone-700 to-slate-800', 'text-stone-100', 'bg-stone-900/30'],
+  'Literature': ['from-red-800 to-amber-900', 'text-rose-100', 'bg-rose-900/30'],
+  'Arts': ['from-amber-700 to-red-800', 'text-amber-100', 'bg-red-900/30'],
+  'Music': ['from-teal-700 to-emerald-800', 'text-teal-100', 'bg-teal-900/30'],
+  'Medicine': ['from-red-700 to-stone-800', 'text-red-100', 'bg-red-900/30'],
+  'Law': ['from-slate-800 to-stone-900', 'text-slate-100', 'bg-slate-900/30'],
+  'Biology': ['from-green-700 to-emerald-800', 'text-green-100', 'bg-green-900/30'],
+  'Physics': ['from-sky-700 to-blue-800', 'text-sky-100', 'bg-sky-900/30'],
+  'Chemistry': ['from-orange-700 to-amber-800', 'text-orange-100', 'bg-orange-900/30'],
+  'Languages': ['from-teal-700 to-green-800', 'text-teal-100', 'bg-teal-900/30'],
+  'Business': ['from-blue-800 to-slate-800', 'text-blue-100', 'bg-blue-900/30'],
+  'Drama': ['from-amber-600 to-orange-700', 'text-yellow-100', 'bg-yellow-900/30'],
+  'Astronomy': ['from-sky-900 to-slate-900', 'text-sky-100', 'bg-sky-900/30'],
+  'Travel': ['from-emerald-700 to-teal-800', 'text-emerald-100', 'bg-emerald-900/30'],
+  'Sociology': ['from-amber-800 to-stone-800', 'text-amber-100', 'bg-amber-900/30'],
+  'Religion': ['from-amber-800 to-stone-900', 'text-amber-100', 'bg-stone-900/30'],
+  'Self-Help': ['from-rose-700 to-orange-800', 'text-rose-100', 'bg-rose-900/30'],
 };
 
 // Default for unknown categories
@@ -158,13 +159,43 @@ export default function CategoriesPage() {
   };
   const item = {
     hidden: { opacity: 0, y: 24, scale: 0.95 },
-    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
   };
 
   const totalBooks = categories.reduce((s, c) => s + c.count, 0);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* ── Top Bar ────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-900/80 backdrop-blur-md px-4 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-xl bg-primary-600 flex items-center justify-center text-white shadow-sm">
+              <BookOpen className="w-4 h-4" />
+            </div>
+            <span className="font-display font-bold text-base text-white tracking-tight">
+              LMS Public
+            </span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/search"
+              className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+            >
+              Search Catalog
+            </Link>
+            <Link
+              href="/books"
+              className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+            >
+              All Books
+            </Link>
+            <div className="h-4 w-px bg-white/20 mx-1" />
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
+
       {/* ── Hero ─────────────────────────────────────────────── */}
       <div className="relative bg-gradient-to-br from-slate-900 via-primary-900 to-indigo-900 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -295,7 +326,7 @@ export default function CategoriesPage() {
             transition={{ delay: 0.5 }}
             className="mt-16 text-center"
           >
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium mb-4">
               Looking for something specific?
             </p>
             <Link

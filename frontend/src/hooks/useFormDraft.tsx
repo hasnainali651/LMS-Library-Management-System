@@ -39,7 +39,9 @@ function useDraftStorage<T extends object>(options: DraftOptions<T> & {
     ? `lms:form-draft:v1:${JSON.stringify([owner, options.formId, options.entityId ?? 'new'])}`
     : null;
   const latest = useRef(options);
-  latest.current = options;
+  useEffect(() => {
+    latest.current = options;
+  });
   const session = useRef<{
     key: string;
     pending: boolean;

@@ -109,7 +109,7 @@ describe('Auth System Integration & Unit Tests', () => {
       expect(res.body.message).toBe('Authentication service temporarily unavailable.');
     });
 
-    it('should never reveal if email exists on forgot-password request', async () => {
+    it('should reject forgot-password with 404 if email does not exist in database', async () => {
       jest.spyOn(User, 'findOne').mockResolvedValue(null);
 
       const res = await request(app)
@@ -118,9 +118,9 @@ describe('Auth System Integration & Unit Tests', () => {
           email: 'nonexistent-user-xyz@example.com',
         });
 
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toContain('If an account associated with that email exists');
+      expect(res.status).toBe(404);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toContain('No account found with this email address');
     });
 
     it('should protect /me and reject requests without Bearer token', async () => {

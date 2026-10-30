@@ -3,6 +3,7 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 const ApiError = require('../utils/ApiError');
+const { isConfigured, uploadBuffer } = require('../config/cloudinary');
 
 // Memory storage to process buffers with Sharp
 const storage = multer.memoryStorage();
@@ -96,6 +97,32 @@ const processImage = (type = 'avatars') => {
       const width = isBook ? 800 : 200;
       const height = isBook ? 1200 : 200;
 
+      // Optimize image in memory via Sharp
+      const processedBuffer = await sharp(req.file.buffer)
+        .resize(width, height, { fit: 'cover', position: 'center' })
+        .toFormat('webp')
+        .webp({ quality: 85 })
+        .toBuffer();
+
+      // Cloudinary upload if configured
+      if (isConfigured) {
+        try {
+          const result = await uploadBuffer(processedBuffer, {
+            folder: `lms/${type}`,
+            format: 'webp',
+          });
+          req.file.processed = {
+            filename: result.public_id,
+            url: result.secure_url,
+            cloudinary: true,
+          };
+          return next();
+        } catch (cloudErr) {
+          console.warn('Cloudinary upload fallback to local storage:', cloudErr.message);
+        }
+      }
+
+      // Local storage fallback
       const uploadDir = path.resolve(__dirname, '../../uploads', type);
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
@@ -104,11 +131,7 @@ const processImage = (type = 'avatars') => {
       const filename = `${type}-${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
       const outputPath = path.join(uploadDir, filename);
 
-      await sharp(req.file.buffer)
-        .resize(width, height, { fit: 'cover', position: 'center' })
-        .toFormat('webp')
-        .webp({ quality: 85 })
-        .toFile(outputPath);
+      await fs.promises.writeFile(outputPath, processedBuffer);
 
       req.file.processed = {
         filename,

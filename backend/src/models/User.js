@@ -27,8 +27,41 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [
+        function () {
+          return this.source === 'LOCAL';
+        },
+        'Password is required for local accounts',
+      ],
       minlength: [8, 'Password must be at least 8 characters long'],
+      select: false,
+    },
+    source: {
+      type: String,
+      enum: {
+        values: ['LOCAL', 'GOOGLE', 'FACEBOOK'],
+        message: '{VALUE} is not a valid auth source',
+      },
+      default: 'LOCAL',
+      uppercase: true,
+    },
+    institution: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    interests: {
+      type: [String],
+      default: [],
+    },
+    isStaffApproved: {
+      type: Boolean,
+      default: function () {
+        return this.role !== 'librarian';
+      },
+    },
+    oauthId: {
+      type: String,
       select: false,
     },
     role: {
@@ -127,13 +160,22 @@ const userSchema = new mongoose.Schema(
 // Indexes
 userSchema.index({ role: 1, isActive: 1 });
 
+// Virtual: SOURCE alias for source
+userSchema.virtual('SOURCE')
+  .get(function () {
+    return this.source;
+  })
+  .set(function (val) {
+    this.source = val;
+  });
+
 // Pre-save hook: Hash password and ensure memberId
 userSchema.pre('save', async function (next) {
   if (!this.memberId) {
     this.memberId = `LIB-${Date.now()}`;
   }
 
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     return next();
   }
 
@@ -144,6 +186,7 @@ userSchema.pre('save', async function (next) {
 
 // Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -156,6 +199,13 @@ userSchema.methods.generateJWT = function (customJti) {
       role: this.role,
       memberId: this.memberId,
       name: this.name,
+      source: this.source,
+      isEmailVerified: this.isEmailVerified,
+      isStaffApproved: this.isStaffApproved,
+      institution: this.institution,
+      department: this.department,
+      studentId: this.studentId,
+      interests: this.interests,
       jti: customJti || crypto.randomUUID(),
     },
     process.env.JWT_SECRET,

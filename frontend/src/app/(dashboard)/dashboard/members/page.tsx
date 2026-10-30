@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Users,
   UserPlus,
@@ -360,14 +361,14 @@ function MemberForms() {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-950 text-primary-700 dark:text-primary-300 font-bold text-xs flex items-center justify-center shrink-0 border border-primary-200 dark:border-primary-800">
             {m.avatar ? (
-              <img src={m.avatar} alt={m.name} className="w-full h-full rounded-full object-cover" />
+              <Image src={m.avatar} alt={m.name} width={36} height={36} className="w-full h-full rounded-full object-cover" unoptimized />
             ) : (
               m.name.charAt(0).toUpperCase()
             )}
           </div>
           <div>
             <p className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100">{m.name}</p>
-            <p className="text-[11px] text-slate-500 font-mono">{m.email}</p>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{m.email}</p>
           </div>
         </div>
       ),
@@ -403,7 +404,7 @@ function MemberForms() {
       header: 'Fine Balance',
       sortable: true,
       render: (m) => (
-        <span className={`font-mono text-xs font-semibold ${m.fineBalance > 0 ? 'text-rose-600' : 'text-slate-400'}`}>
+        <span className={`font-mono text-xs font-semibold tabular-nums ${m.fineBalance > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'}`}>
           PKR {m.fineBalance.toFixed(2)}
         </span>
       ),
@@ -431,7 +432,7 @@ function MemberForms() {
               setIsEditing(false);
             }}
             title="View member card"
-            className="p-1.5 text-slate-500 hover:text-slate-900"
+            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
           >
             <Eye className="w-3.5 h-3.5" />
           </Button>
@@ -444,7 +445,7 @@ function MemberForms() {
               setIsEditing(true);
             }}
             title="Edit member details"
-            className="p-1.5 text-slate-500 hover:text-slate-900"
+            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
           >
             <Edit2 className="w-3.5 h-3.5" />
           </Button>
@@ -487,7 +488,7 @@ function MemberForms() {
             <Users className="w-6 h-6 text-primary-600" />
             Patron & Member Directory
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
             Browse registered community readers, manage accounts, enforce suspensions, and export lists.
           </p>
         </div>
@@ -692,31 +693,31 @@ function MemberForms() {
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{selectedMember.name}</h4>
-                <p className="text-slate-500 font-mono">{selectedMember.memberId} • {selectedMember.email}</p>
+                <p className="text-slate-600 dark:text-slate-400 font-mono">{selectedMember.memberId} • {selectedMember.email}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-emerald-600 font-semibold">{selectedMember.membershipType} Tier</span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-semibold">{selectedMember.membershipType} Tier</span>
                   <span>•</span>
                   <span>{selectedMember.isActive ? 'Active Account' : 'Suspended'}</span>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-slate-600 dark:text-slate-300">
+            <div className="grid grid-cols-2 gap-3 text-slate-700 dark:text-slate-200">
               <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Phone</span>
+                <span className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 block">Phone</span>
                 <span className="font-mono">{selectedMember.phone || 'None provided'}</span>
               </div>
               <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Department</span>
+                <span className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 block">Department</span>
                 <span>{selectedMember.department || 'General Patron'}</span>
               </div>
               <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Active Loans</span>
+                <span className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 block">Active Loans</span>
                 <span className="font-mono font-bold">{selectedMember.activeLoans} books checked out</span>
               </div>
               <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Unpaid Fines</span>
-                <span className="font-mono font-bold text-rose-600">PKR {selectedMember.fineBalance.toFixed(2)}</span>
+                <span className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 block">Unpaid Fines</span>
+                <span className="font-mono font-bold text-rose-600 dark:text-rose-400 tabular-nums">PKR {selectedMember.fineBalance.toFixed(2)}</span>
               </div>
             </div>
           </div>

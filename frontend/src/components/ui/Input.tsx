@@ -59,7 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={error ? errorId : helperText ? helperId : undefined}
             className={cn(
               'w-full h-10 rounded-[var(--neo-r-sm)] text-sm transition-all duration-150',
-              'bg-[var(--neo-inset-bg)] text-[var(--neo-text)] [box-shadow:var(--neo-inset)] border border-[var(--neo-border-dark)]',
+              'bg-[var(--neo-inset-bg)] text-[var(--neo-text)] [box-shadow:var(--neo-inset)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)]',
               'placeholder:text-[var(--neo-text-3)]',
               'focus:outline-none focus:border-[var(--neo-accent)] focus:[box-shadow:var(--neo-inset),0_0_0_3px_rgba(79,70,229,0.25)]',
               'disabled:opacity-50 disabled:cursor-not-allowed',

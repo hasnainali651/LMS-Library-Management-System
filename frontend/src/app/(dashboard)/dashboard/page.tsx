@@ -90,140 +90,50 @@ export default function StudentDashboardPage() {
     async function fetchDashboardData() {
       setLoading(true);
 
-      const userId = user?._id || 'mock-user-id';
+      const userId = user?._id;
 
-      // 1. Fetch loans
-      const loansPromise = api
-        .get(`/circulation/member/${userId}`)
-        .then((res) => res.data?.data?.activeLoans || res.data?.data || [])
-        .catch(() => [
-          {
-            _id: 'mock-loan-1',
-            book: {
-              _id: 'b1',
-              title: 'Designing Data-Intensive Applications',
-              authors: ['Martin Kleppmann'],
-              coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=400&q=80',
-            },
-            dueDate: new Date(Date.now() + 5 * 86400000).toISOString(),
-            status: 'active',
-            renewalCount: 0,
-            shelfLocation: 'CS-03-12',
-          },
-          {
-            _id: 'mock-loan-2',
-            book: {
-              _id: 'b2',
-              title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-              authors: ['Robert C. Martin'],
-              coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80',
-            },
-            dueDate: new Date(Date.now() + 1 * 86400000).toISOString(),
-            status: 'active',
-            renewalCount: 1,
-            shelfLocation: 'CS-01-04',
-          },
-        ]);
+      // 1. Fetch loans (only if user authenticated)
+      const loansPromise = userId
+        ? api
+          .get(`/circulation/member/${userId}`)
+          .then((res) => res.data?.data?.activeLoans || res.data?.data || [])
+          .catch(() => [])
+        : Promise.resolve([]);
 
       // 2. Fetch reservations
-      const reservationsPromise = api
-        .get('/reservations/my')
-        .then((res) => res.data?.data?.reservations || res.data?.data || [])
-        .catch(() => [
-          {
-            _id: 'mock-res-1',
-            bookTitle: 'Artificial Intelligence: A Modern Approach',
-            author: 'Stuart Russell, Peter Norvig',
-            status: 'ready',
-            shelfLocation: 'HOLD-SHELF-03',
-            expiresAt: new Date(Date.now() + 2 * 86400000).toISOString(),
-          },
-        ]);
+      const reservationsPromise = userId
+        ? api
+          .get('/reservations/my')
+          .then((res) => res.data?.data?.reservations || res.data?.data || [])
+          .catch(() => [])
+        : Promise.resolve([]);
 
       // 3. Fetch fines
-      const finesPromise = api
-        .get('/fines/my')
-        .then((res) => {
-          const fineList = res.data?.data?.fines || res.data?.data || [];
-          const totalUnpaid = fineList
-            .filter((f: any) => f.status === 'pending' || f.status === 'unpaid')
-            .reduce((acc: number, f: any) => acc + (f.amount || 0), 0);
-          return { fineList, totalUnpaid };
-        })
-        .catch(() => ({ fineList: [], totalUnpaid: 0 }));
+      const finesPromise = userId
+        ? api
+          .get('/fines/my')
+          .then((res) => {
+            const fineList = res.data?.data?.fines || res.data?.data || [];
+            const totalUnpaid = fineList
+              .filter((f: any) => f.status === 'pending' || f.status === 'unpaid')
+              .reduce((acc: number, f: any) => acc + (f.amount || 0), 0);
+            return { fineList, totalUnpaid };
+          })
+          .catch(() => ({ fineList: [], totalUnpaid: 0 }))
+        : Promise.resolve({ fineList: [], totalUnpaid: 0 });
 
-      // 4. Fetch recommendations
+      // 4. Fetch recommendations (fallback to popular books from catalog API)
       const recommendedPromise = api
         .get('/search/recommended')
         .then((res) => res.data?.data?.books || res.data?.data || [])
-        .catch(() => [
-          {
-            _id: 'rec1',
-            title: 'Introduction to Algorithms',
-            authors: ['Thomas H. Cormen', 'Charles E. Leiserson'],
-            coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80',
-            category: 'Algorithms',
-            status: 'available',
-            availableCopies: 3,
-            totalCopies: 4,
-            shelfLocation: 'CS-01-08',
-          },
-          {
-            _id: 'rec2',
-            title: 'Refactoring: Improving the Design of Existing Code',
-            authors: ['Martin Fowler'],
-            coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
-            category: 'Software Engineering',
-            status: 'available',
-            availableCopies: 2,
-            totalCopies: 3,
-            shelfLocation: 'CS-04-12',
-          },
-          {
-            _id: 'rec3',
-            title: 'The Pragmatic Programmer: Your Journey to Mastery',
-            authors: ['David Thomas', 'Andrew Hunt'],
-            coverImage: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&q=80',
-            category: 'Software Engineering',
-            status: 'available',
-            availableCopies: 1,
-            totalCopies: 5,
-            shelfLocation: 'CS-02-04',
-          },
-          {
-            _id: 'rec4',
-            title: 'Operating System Concepts',
-            authors: ['Abraham Silberschatz', 'Peter B. Galvin'],
-            coverImage: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&q=80',
-            category: 'Systems',
-            status: 'available',
-            availableCopies: 4,
-            totalCopies: 6,
-            shelfLocation: 'SYS-01-14',
-          },
-          {
-            _id: 'rec5',
-            title: 'Computer Networks',
-            authors: ['Andrew S. Tanenbaum', 'David J. Wetherall'],
-            coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=400&q=80',
-            category: 'Networking',
-            status: 'available',
-            availableCopies: 2,
-            totalCopies: 4,
-            shelfLocation: 'NET-03-02',
-          },
-          {
-            _id: 'rec6',
-            title: 'Clean Architecture: A Craftsman’s Guide',
-            authors: ['Robert C. Martin'],
-            coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80',
-            category: 'Architecture',
-            status: 'available',
-            availableCopies: 1,
-            totalCopies: 3,
-            shelfLocation: 'CS-05-19',
-          },
-        ]);
+        .catch(async () => {
+          try {
+            const fallbackRes = await api.get('/search/popular');
+            return fallbackRes.data?.data?.books || fallbackRes.data?.data || [];
+          } catch {
+            return [];
+          }
+        });
 
       try {
         const [rawLoans, rawReservations, rawFines, rawRecommended] = await Promise.all([
@@ -390,21 +300,21 @@ export default function StudentDashboardPage() {
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard
-            number={loading ? '...' : stats.booksBorrowed}
+            number={loading ? '--' : stats.booksBorrowed}
             label="Books Borrowed"
             icon={BookOpen}
             color="primary"
             trend={{ value: 'All-time circulation', direction: 'neutral' }}
           />
           <StatCard
-            number={loading ? '...' : stats.currentlyIssued}
+            number={loading ? '--' : stats.currentlyIssued}
             label="Currently Issued"
             icon={CalendarCheck}
             color="sky"
             trend={{ value: `${stats.currentlyIssued} active books on loan`, direction: 'neutral' }}
           />
           <StatCard
-            number={loading ? '...' : `PKR ${stats.unpaidFines.toFixed(2)}`}
+            number={loading ? '--' : `PKR ${stats.unpaidFines.toFixed(2)}`}
             label="Unpaid Fines"
             icon={Receipt}
             color={stats.unpaidFines > 0 ? 'rose' : 'emerald'}
@@ -414,7 +324,7 @@ export default function StudentDashboardPage() {
             }}
           />
           <StatCard
-            number={loading ? '...' : stats.reservationsQueued}
+            number={loading ? '--' : stats.reservationsQueued}
             label="Reservations Queued"
             icon={Bookmark}
             color="purple"

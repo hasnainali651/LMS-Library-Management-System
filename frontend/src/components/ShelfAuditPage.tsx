@@ -73,10 +73,6 @@ const ShelfAuditContent: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
-
   const fetchHistory = async () => {
     try {
       setLoadingHistory(true);
@@ -89,6 +85,10 @@ const ShelfAuditContent: React.FC = () => {
       setLoadingHistory(false);
     }
   };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

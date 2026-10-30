@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTrackedRouter as useRouter } from '@/hooks/useTrackedRouter';
 import {
@@ -16,6 +17,7 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { ROLE_LABELS, UserRole } from '@/lib/tokens';
 import { NotificationDrawer } from './NotificationDrawer';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 export const TopNav: React.FC = () => {
@@ -57,7 +59,7 @@ export const TopNav: React.FC = () => {
   const role = (user?.role as UserRole) || 'student';
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[var(--neo-border-light)] bg-[var(--neo-card)]/95 px-4 md:px-8 backdrop-blur-md [box-shadow:var(--neo-raised-sm)] transition-colors">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] bg-[var(--neo-card)]/95 px-4 md:px-8 backdrop-blur-md [box-shadow:var(--neo-raised-sm)] transition-colors">
       {/* Breadcrumbs Navigation */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[var(--neo-text-3)] font-medium">
         <Link
@@ -86,11 +88,14 @@ export const TopNav: React.FC = () => {
       </nav>
 
       {/* Right Controls Pod */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
+        {/* Theme Toggle (Eye-comfort switcher) */}
+        <ThemeToggle />
+
         {/* Notification Bell with Badge */}
         <button
           onClick={() => setDrawerOpen(true)}
-          className="neo-btn relative p-2.5 rounded-[var(--neo-r-sm)] text-[var(--neo-text-2)] hover:text-[var(--neo-text)] focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)]"
+          className="relative p-2.5 cursor-pointer"
           aria-label={`View notifications (${unreadCount} unread)`}
         >
           <Bell className="w-4 h-4" />
@@ -106,11 +111,22 @@ export const TopNav: React.FC = () => {
           <button
             onClick={() => setUserDropdownOpen((prev) => !prev)}
             aria-expanded={userDropdownOpen}
-            className="neo-btn flex items-center gap-2.5 p-1.5 pr-3 rounded-[var(--neo-r-sm)] focus-visible:ring-2 focus-visible:ring-[var(--neo-accent)]"
+            className="cursor-pointer flex items-center gap-2.5 p-1.5 pr-3 rounded-[var(--neo-r-sm)]"
           >
-            <div className="w-8 h-8 rounded-[var(--neo-r-sm)] bg-[var(--neo-accent)] text-white font-bold text-xs flex items-center justify-center shadow-sm">
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-            </div>
+            {user?.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.name || 'User avatar'}
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-full object-cover shadow-sm ring-1 ring-[var(--neo-border-light)] dark:ring-[var(--neo-border-dark)]"
+                unoptimized
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-[var(--neo-accent)] text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
             <div className="hidden md:flex flex-col text-left">
               <span className="text-xs font-bold text-[var(--neo-text)] line-clamp-1 max-w-[120px]">
                 {user?.name || 'Patron'}

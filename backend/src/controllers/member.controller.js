@@ -10,7 +10,7 @@ const notificationService = require('../services/notificationService');
 const queueAccountEmail = async (member, subject, html) => {
   try {
     return await notificationService.queueEmail({ userId: member._id, to: member.email, subject, html,
-      dedupeKey: `account:${member._id}:${crypto.randomUUID()}` });
+      dedupKey: `account:${member._id}:${crypto.randomUUID()}` });
   } catch (error) {
     return { status: 'failed', message: 'Account change saved, but email could not be queued.' };
   }

@@ -1,6 +1,7 @@
 import axios, { CanceledError, InternalAxiosRequestConfig } from 'axios';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';
+import { showApiErrorToast } from '@/components/ui/AlertNotification';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 const DEFAULT_PAUSE_MS = 10_000;
@@ -134,7 +135,8 @@ api.interceptors.response.use(
     if (status === 429) {
       const now = Date.now();
       if (typeof window !== 'undefined' && rateLimitedUntil <= now) {
-        toast.error('Too many requests. Please wait 10 seconds before trying again.', {
+        showApiErrorToast(error, {
+          title: 'Token Bucket Rate Limit Enforced',
           id: 'api-too-many-requests',
           duration: DEFAULT_PAUSE_MS,
         });
@@ -169,7 +171,7 @@ api.interceptors.response.use(
       // Second 401 or refresh failure
       await useAuthStore.getState().logout();
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-        window.location.href = '/login';
+        window.location.replace('/login');
       }
     }
 

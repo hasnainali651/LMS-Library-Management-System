@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import {
   ArrowLeftRight,
   BookOpen,
@@ -613,15 +614,15 @@ function CirculationDeskContent() {
                     <h4 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100">
                       {selectedMember.name}
                     </h4>
-                    <p className="text-[11px] text-slate-500 font-mono">
+                    <p className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-medium">
                       {selectedMember.memberId} • {selectedMember.membershipType} Tier
                     </p>
                     <div className="flex items-center gap-2 mt-1 text-[10px]">
-                      <span className="text-slate-500">
+                      <span className="text-slate-700 dark:text-slate-300">
                         Loans: <strong>{selectedMember.activeLoansCount}/{selectedMember.maxBorrowLimit}</strong>
                       </span>
                       <span>•</span>
-                      <span className={selectedMember.fineBalance ? 'text-rose-600 font-semibold' : 'text-slate-500'}>
+                      <span className={selectedMember.fineBalance ? 'text-rose-600 dark:text-rose-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}>
                         Fines: PKR {selectedMember.fineBalance?.toFixed(2)}
                       </span>
                     </div>
@@ -738,7 +739,7 @@ function CirculationDeskContent() {
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-16 rounded-lg bg-[var(--neo-inset-bg)] overflow-hidden shrink-0 border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] flex items-center justify-center shadow-[var(--neo-inset-sm)]">
                     {selectedBook.coverImage ? (
-                      <img src={selectedBook.coverImage} alt={selectedBook.title} className="w-full h-full object-cover" />
+                      <Image src={selectedBook.coverImage} alt={selectedBook.title} width={48} height={64} className="w-full h-full object-cover" unoptimized />
                     ) : (
                       <BookOpen className="w-5 h-5 text-[var(--neo-text-muted)]" />
                     )}

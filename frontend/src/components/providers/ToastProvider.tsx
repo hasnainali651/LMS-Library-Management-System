@@ -3,6 +3,7 @@
 import React from 'react';
 import toast, { Toaster, Toast } from 'react-hot-toast';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   BookOpen,
   Calendar,
@@ -64,28 +65,27 @@ export const BookIssuedToast: React.FC<BookIssuedToastProps> = ({ t, transaction
   const member = transaction.member;
   const dueDateStr = transaction.dueDate
     ? new Date(transaction.dueDate).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      })
+      month: 'short',
+      day: 'numeric',
+    })
     : 'Standard term';
 
   return (
     <div
-      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-emerald-500/30 shadow-2xl shadow-emerald-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${
-        t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
-      }`}
+      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-emerald-500/30 shadow-2xl shadow-emerald-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
+        }`}
     >
       <div className="flex items-start gap-3.5">
         {/* Cover thumbnail / fallback */}
         <div className="relative flex-shrink-0 w-12 h-16 rounded-lg overflow-hidden border border-emerald-500/20 bg-emerald-950/40 flex items-center justify-center shadow-inner">
           {book?.coverImage ? (
-            <img
+            <Image
               src={book.coverImage}
               alt={book.title || 'Book Cover'}
+              width={48}
+              height={64}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
+              unoptimized
             />
           ) : (
             <div className="flex flex-col items-center justify-center p-1 text-emerald-400">
@@ -100,7 +100,7 @@ export const BookIssuedToast: React.FC<BookIssuedToastProps> = ({ t, transaction
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <CheckCircle2 className="w-3 h-3" /> Book Issued
             </span>
-            <span className="text-[11px] text-slate-400 font-mono">
+            <span className="text-[11px] text-[#94a3b8] font-mono">
               Due {dueDateStr}
             </span>
           </div>
@@ -109,15 +109,15 @@ export const BookIssuedToast: React.FC<BookIssuedToastProps> = ({ t, transaction
             {book?.title || 'Book Issued'}
           </h4>
 
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-300">
-            <span className="flex items-center gap-1 text-slate-400">
+          <div className="flex items-center gap-2 mt-1.5 text-xs text-[#cbd5e1]">
+            <span className="flex items-center gap-1 text-[#94a3b8]">
               <User className="w-3.5 h-3.5 text-slate-500" />
               <strong className="text-slate-200 font-medium">
                 {member?.name || 'Member'}
               </strong>
             </span>
             {member?.memberId && (
-              <span className="text-[11px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
+              <span className="text-[11px] px-1.5 py-0.2 rounded bg-slate-800 text-[#94a3b8] font-mono">
                 {member.memberId}
               </span>
             )}
@@ -128,7 +128,7 @@ export const BookIssuedToast: React.FC<BookIssuedToastProps> = ({ t, transaction
         <button
           onClick={() => toast.dismiss(t.id)}
           aria-label="Dismiss notification"
-          className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded-lg text-[#94a3b8] hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -149,9 +149,8 @@ export const FineAddedToast: React.FC<FineAddedToastProps> = ({
 }) => {
   return (
     <div
-      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-rose-500/35 shadow-2xl shadow-rose-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${
-        t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
-      }`}
+      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-rose-500/35 shadow-2xl shadow-rose-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
+        }`}
     >
       <div className="flex items-start gap-3.5">
         {/* Red icon container */}
@@ -166,7 +165,7 @@ export const FineAddedToast: React.FC<FineAddedToastProps> = ({
               Fine Incurred
             </span>
             {reason && (
-              <span className="text-[11px] text-slate-400 truncate">
+              <span className="text-[11px] text-[#94a3b8] truncate">
                 {reason}
               </span>
             )}
@@ -177,14 +176,14 @@ export const FineAddedToast: React.FC<FineAddedToastProps> = ({
               +PKR {Number(amount).toLocaleString()}
             </span>
             {newBalance !== undefined && (
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-[#94a3b8] font-mono">
                 (Total: PKR {Number(newBalance).toLocaleString()})
               </span>
             )}
           </div>
 
           {bookTitle && (
-            <p className="text-xs text-slate-300 truncate mt-1">
+            <p className="text-xs text-[#cbd5e1] truncate mt-1">
               For: <span className="text-slate-100 font-medium">&quot;{bookTitle}&quot;</span>
             </p>
           )}
@@ -205,7 +204,7 @@ export const FineAddedToast: React.FC<FineAddedToastProps> = ({
         <button
           onClick={() => toast.dismiss(t.id)}
           aria-label="Dismiss fine alert"
-          className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded-lg text-[#94a3b8] hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -226,30 +225,29 @@ export const ReservationReadyToast: React.FC<ReservationReadyToastProps> = ({
 }) => {
   const expiryFormatted = expiresAt
     ? new Date(expiresAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-      })
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    })
     : 'in 48 hours';
 
   return (
     <div
-      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-amber-500/40 shadow-2xl shadow-amber-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${
-        t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
-      }`}
+      className={`max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-amber-500/40 shadow-2xl shadow-amber-950/40 rounded-2xl p-4 transition-all duration-300 pointer-events-auto ${t.visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
+        }`}
     >
       <div className="flex items-start gap-3.5">
         {/* Cover / Icon */}
         <div className="relative flex-shrink-0 w-12 h-16 rounded-lg overflow-hidden border border-amber-500/30 bg-amber-950/40 flex items-center justify-center shadow-inner">
           {coverImage ? (
-            <img
+            <Image
               src={coverImage}
               alt={bookTitle}
+              width={48}
+              height={64}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
+              unoptimized
             />
           ) : (
             <div className="flex flex-col items-center justify-center p-1 text-amber-400">
@@ -277,7 +275,7 @@ export const ReservationReadyToast: React.FC<ReservationReadyToastProps> = ({
 
           <div className="mt-3 flex items-center gap-2">
             <Link
-              href="/reservations"
+              href="/dashboard/reservations"
               onClick={() => toast.dismiss(t.id)}
               className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors shadow-sm"
             >
@@ -291,7 +289,7 @@ export const ReservationReadyToast: React.FC<ReservationReadyToastProps> = ({
         <button
           onClick={() => toast.dismiss(t.id)}
           aria-label="Dismiss reservation alert"
-          className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded-lg text-[#94a3b8] hover:text-slate-200 hover:bg-slate-800/80 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -371,4 +369,12 @@ export function ToastProvider({ children }: { children?: React.ReactNode }) {
   );
 }
 
+export {
+  ApiErrorAlert,
+  SuccessAlert,
+  showApiErrorToast,
+  showSuccessToast,
+} from '@/components/ui/AlertNotification';
+
 export default ToastProvider;
+

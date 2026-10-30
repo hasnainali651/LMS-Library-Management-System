@@ -58,6 +58,26 @@ export function PublicFooter() {
         ) : (
           <p className="text-xs text-[var(--neo-text-3)] font-medium">NextGen Community Library & Digital Circulation Service.</p>
         )}
+
+        {/* Legal & Policy Navigation Bar */}
+        <div className="mt-8 pt-6 border-t border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--neo-text-3)]">
+          <p>© {new Date().getFullYear()} NextGen LMS. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <a
+              href="/terms"
+              className="hover:text-[var(--neo-accent)] transition-colors duration-300 font-medium"
+            >
+              Terms of Service
+            </a>
+            <span className="text-[var(--neo-border-dark)]">•</span>
+            <a
+              href="/privacy"
+              className="hover:text-[var(--neo-accent)] transition-colors duration-300 font-medium"
+            >
+              Privacy Policy
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import Webcam from 'react-webcam';
 
 const WebcamComponent = Webcam as unknown as React.ComponentType<any>;
@@ -189,10 +190,13 @@ export const CameraScanner: React.FC<CameraScannerProps> = ({
             </div>
           </>
         ) : (
-          <img
+          <Image
             src={capturedImage}
             alt="Captured scan"
+            width={640}
+            height={480}
             className="w-full h-full object-cover"
+            unoptimized
           />
         )}
 

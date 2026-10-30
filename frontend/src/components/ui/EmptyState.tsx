@@ -34,7 +34,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       )}
       {...props}
     >
-      <div className="w-12 h-12 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] text-[var(--neo-accent)] flex items-center justify-center mb-4 [box-shadow:var(--neo-flat)] border border-[var(--neo-border-light)]">
+      <div className="w-12 h-12 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] text-[var(--neo-accent)] flex items-center justify-center mb-4 [box-shadow:var(--neo-flat)] ">
         {renderIcon()}
       </div>
 

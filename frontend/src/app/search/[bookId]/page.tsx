@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useTrackedRouter as useRouter } from '@/hooks/useTrackedRouter';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   Star,
@@ -36,6 +37,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 import { useStateDraft } from '@/hooks/useFormDraft';
@@ -335,17 +337,28 @@ function BookDetailContent({ bookId }: { bookId: string }) {
   const desc = descExpanded ? description : description.slice(0, 480);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 py-6">
 
-        {/* Back */}
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm font-medium mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
+        {/* Top bar with Back and ThemeToggle */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 text-sm font-semibold transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Search
+          </button>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              href="/dashboard"
+              className="text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+              Dashboard
+            </Link>
+          </div>
+        </div>
 
         {/* ── TOP SECTION ────────────────────────────────────── */}
         <div className="flex flex-col lg:flex-row gap-10">
@@ -360,7 +373,7 @@ function BookDetailContent({ bookId }: { bookId: string }) {
               style={{ background: `linear-gradient(135deg, ${palette[0]}, ${palette[1]})` }}
             >
               {book.coverImage ? (
-                <img src={book.coverImage} alt={book.title} className="w-full h-full object-cover" />
+                <Image src={book.coverImage} alt={book.title} width={224} height={300} className="w-full h-full object-cover" unoptimized />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6 gap-3 text-center">
                   <div className="w-16 h-20 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center">
@@ -372,35 +385,35 @@ function BookDetailContent({ bookId }: { bookId: string }) {
             </motion.div>
 
             {/* Quick meta */}
-            <div className="hidden lg:block space-y-3 text-xs text-slate-500 dark:text-slate-400">
+            <div className="hidden lg:block space-y-3 text-xs text-slate-700 dark:text-slate-300">
               {book.isbn && (
                 <div className="flex items-center gap-2">
-                  <Hash className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="font-mono">{book.isbn}</span>
+                  <Hash className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span className="font-mono text-slate-700 dark:text-slate-300">{book.isbn}</span>
                 </div>
               )}
               {book.publisher && (
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>{book.publisher}</span>
+                  <Building2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span className="text-slate-700 dark:text-slate-300">{book.publisher}</span>
                 </div>
               )}
               {book.publishedYear && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>{book.publishedYear}</span>
+                  <Calendar className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span className="text-slate-700 dark:text-slate-300">{book.publishedYear}</span>
                 </div>
               )}
               {book.language && (
                 <div className="flex items-center gap-2">
-                  <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="capitalize">{book.language}</span>
+                  <Globe className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span className="capitalize text-slate-700 dark:text-slate-300">{book.language}</span>
                 </div>
               )}
               {book.shelfLocation && (
                 <div className="flex items-center gap-2">
                   <MapPin className="w-3.5 h-3.5 text-primary-500 shrink-0" />
-                  <span className="font-mono font-medium text-slate-700 dark:text-slate-300">{book.shelfLocation}</span>
+                  <span className="font-mono font-medium text-slate-800 dark:text-slate-200">{book.shelfLocation}</span>
                 </div>
               )}
             </div>
@@ -438,8 +451,8 @@ function BookDetailContent({ bookId }: { bookId: string }) {
             {(book.rating ?? 0) > 0 && (
               <div className="flex items-center gap-3 mt-3">
                 <StarRow value={book.rating!} size="md" />
-                <span className="font-bold text-amber-500 tabular-nums">{book.rating!.toFixed(1)}</span>
-                <span className="text-sm text-slate-400">({book.reviewCount ?? reviews.length} reviews)</span>
+                <span className="font-bold text-amber-600 dark:text-amber-400 tabular-nums">{book.rating!.toFixed(1)}</span>
+                <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">({book.reviewCount ?? reviews.length} reviews)</span>
               </div>
             )}
 
@@ -731,7 +744,7 @@ function BookDetailContent({ bookId }: { bookId: string }) {
                             style={{ background: `linear-gradient(135deg, ${pal[0]}, ${pal[1]})` }}
                           >
                             {sb.coverImage ? (
-                              <img src={sb.coverImage} alt={sb.title} className="w-full h-full object-cover" />
+                              <Image src={sb.coverImage} alt={sb.title} width={120} height={160} className="w-full h-full object-cover" unoptimized />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
                                 <BookOpen className="w-6 h-6 text-white/60" />

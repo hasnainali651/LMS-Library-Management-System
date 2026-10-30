@@ -107,14 +107,14 @@ const DATE_PRESETS = [
 const DiffView: React.FC<{ before?: Record<string, unknown>; after?: Record<string, unknown>; changes?: Record<string, unknown> }> = ({ before, after, changes }) => {
   const diffData = changes && Object.keys(changes).length > 0 ? changes : after;
   if (!diffData || Object.keys(diffData).length === 0) {
-    return <p className="text-slate-400 text-xs">No change metadata recorded for this action.</p>;
+    return <p className="text-slate-600 dark:text-slate-400 text-xs font-medium">No change metadata recorded for this action.</p>;
   }
 
   return (
     <div className="space-y-2 text-[11px]">
       {Object.entries(diffData).map(([key, value]) => (
         <div key={key} className="rounded-lg p-2 bg-slate-50 dark:bg-slate-800/40">
-          <span className="font-mono font-bold text-slate-600 dark:text-slate-400">{key}:</span>
+          <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{key}:</span>
           <span className="font-mono ml-2 text-slate-800 dark:text-slate-200">
             {typeof value === 'object' ? JSON.stringify(value) : String(value)}
           </span>
@@ -175,7 +175,7 @@ export default function AuditLogPage() {
       render: (l) => {
         const timeStr = l.createdAt || l.timestamp;
         return (
-          <span className="font-mono text-[11px] text-slate-500 whitespace-nowrap">
+          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap">
             {timeStr ? format(parseISO(timeStr), 'MMM d HH:mm:ss') : '—'}
           </span>
         );
@@ -191,7 +191,7 @@ export default function AuditLogPage() {
             <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
               {(actor as any)?.name ?? 'System'}
             </p>
-            <p className="text-[11px] text-slate-400 truncate">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 truncate font-mono">
               {(actor as any)?.email ?? (typeof l.performedBy === 'string' ? l.performedBy : '')}
             </p>
           </div>
@@ -203,7 +203,7 @@ export default function AuditLogPage() {
       header: 'Action',
       sortable: true,
       render: (l) => {
-        const color = ACTION_COLORS[l.action] ?? 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300';
+        const color = ACTION_COLORS[l.action] ?? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200';
         const icon = ACTION_ICONS[l.action] ?? <Info className="w-3 h-3" />;
         return (
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono font-medium ${color}`}>
@@ -217,7 +217,7 @@ export default function AuditLogPage() {
       key: 'target',
       header: 'Target / Model',
       render: (l) => (
-        <span className="text-xs text-slate-600 dark:text-slate-300 max-w-[220px] truncate block">
+        <span className="text-xs text-slate-700 dark:text-slate-300 max-w-[220px] truncate block font-medium">
           {l.targetModel ? `${l.targetModel} (${l.target || l._id.slice(-6)})` : l.target || '—'}
         </span>
       ),
@@ -226,7 +226,7 @@ export default function AuditLogPage() {
       key: 'ipAddress',
       header: 'IP / Source',
       render: (l) => (
-        <span className="font-mono text-[11px] text-slate-400 whitespace-nowrap">
+        <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap">
           {l.ipAddress || '—'}
         </span>
       ),
@@ -240,8 +240,8 @@ export default function AuditLogPage() {
           variant="ghost"
           size="sm"
           onClick={() => setDetailEntry(l)}
-          leftIcon={<ExternalLink className="w-3 h-3 text-slate-400" />}
-          className="text-xs text-slate-500 hover:text-primary-600"
+          leftIcon={<ExternalLink className="w-3 h-3 text-slate-500 dark:text-slate-400" />}
+          className="text-xs text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400"
         >
           View
         </Button>
@@ -257,7 +257,7 @@ export default function AuditLogPage() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             System Audit Log
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
             Immutable, tamper-evident security audit trail tracking staff actions, role changes, and data mutations.
           </p>
         </div>
@@ -316,8 +316,8 @@ export default function AuditLogPage() {
       </div>
 
       {/* Count */}
-      <p className="text-xs text-slate-400">
-        Showing <span className="font-semibold text-slate-700 dark:text-slate-300">{filtered.length}</span> of {totalDocs} events
+      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+        Showing <span className="font-semibold text-slate-800 dark:text-slate-200 tabular-nums">{filtered.length}</span> of <span className="tabular-nums">{totalDocs}</span> events
       </p>
 
       {/* Table / Loading / Error */}
@@ -342,7 +342,7 @@ export default function AuditLogPage() {
           <Table columns={columns} data={filtered} />
           {totalPages > 1 && (
             <div className="flex justify-between items-center pt-2">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 Page {page} of {totalPages}
               </p>
               <Pagination
@@ -372,40 +372,40 @@ export default function AuditLogPage() {
           <div className="space-y-5 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Timestamp</p>
-                <p className="font-mono text-slate-700 dark:text-slate-300">
+                <p className="text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Timestamp</p>
+                <p className="font-mono text-slate-800 dark:text-slate-200">
                   {detailEntry.createdAt || detailEntry.timestamp
                     ? format(parseISO(detailEntry.createdAt || detailEntry.timestamp!), 'PPpp')
                     : '—'}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">IP Address</p>
-                <p className="font-mono text-slate-700 dark:text-slate-300">{detailEntry.ipAddress || 'N/A'}</p>
+                <p className="text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">IP Address</p>
+                <p className="font-mono text-slate-800 dark:text-slate-200">{detailEntry.ipAddress || 'N/A'}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Performed By</p>
-                <p className="text-slate-700 dark:text-slate-300">
+                <p className="text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Performed By</p>
+                <p className="text-slate-800 dark:text-slate-200">
                   {typeof detailEntry.performedBy === 'object'
                     ? `${detailEntry.performedBy?.name || 'User'} (${detailEntry.performedBy?.email || ''})`
                     : detailEntry.performedBy || 'System'}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Target Model</p>
-                <p className="text-slate-700 dark:text-slate-300">{detailEntry.targetModel || 'System'}</p>
+                <p className="text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Target Model</p>
+                <p className="text-slate-800 dark:text-slate-200">{detailEntry.targetModel || 'System'}</p>
               </div>
             </div>
 
             <div>
-              <p className="text-slate-400 font-semibold uppercase tracking-wider text-[10px] mb-2">Recorded Changes / Payload</p>
+              <p className="text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px] mb-2">Recorded Changes / Payload</p>
               <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-3 max-h-64 overflow-y-auto">
                 <DiffView before={detailEntry.before} after={detailEntry.after} changes={detailEntry.changes} />
               </div>
             </div>
 
-            <div className="flex items-start gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-500 text-[11px]">
-              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-400" />
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[11px]">
+              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-500 dark:text-slate-400" />
               <p>Audit events are immutable and cannot be modified or deleted from this interface.</p>
             </div>
           </div>

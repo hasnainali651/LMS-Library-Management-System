@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   BookOpen,
   ArrowRight,
@@ -19,9 +18,10 @@ import {
   Shield,
   Star,
   QrCode,
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { PublicFooter } from '@/components/layout/PublicFooter';
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { PublicFooter } from "@/components/layout/PublicFooter";
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
 interface SpotlightBook {
   id: string;
@@ -39,145 +39,102 @@ interface SpotlightBook {
 
 const FEATURED_BOOKS: SpotlightBook[] = [
   {
-    id: 'b-1',
-    title: 'Designing Data-Intensive Applications',
-    author: 'Martin Kleppmann',
-    category: 'Computer Science',
-    callNumber: 'QA76.9.D3 K54',
-    shelf: 'Rack 4, Shelf B',
+    id: "b-1",
+    title: "Designing Data-Intensive Applications",
+    author: "Martin Kleppmann",
+    category: "Computer Science",
+    callNumber: "QA76.9.D3 K54",
+    shelf: "Rack 4, Shelf B",
     availableCopies: 3,
     totalCopies: 4,
     rating: 4.9,
-    summary: 'The definitive architectural guide to distributed data systems, reliability, scalability, and maintainability.',
+    summary:
+      "The definitive architectural guide to distributed data systems, reliability, scalability, and maintainability.",
     aiTakeaways: [
-      'Contrasts batch vs. stream processing models in distributed architectures.',
-      'Deconstructs consensus protocols including Paxos and Raft.',
-      'Deep dive into replication lag, transaction isolation levels, and eventual consistency.'
+      "Contrasts batch vs. stream processing models in distributed architectures.",
+      "Deconstructs consensus protocols including Paxos and Raft.",
+      "Deep dive into replication lag, transaction isolation levels, and eventual consistency.",
     ],
   },
   {
-    id: 'b-2',
-    title: 'Dune: The Masterwork Edition',
-    author: 'Frank Herbert',
-    category: 'Literature & Sci-Fi',
-    callNumber: 'PS3558.E63 D8',
-    shelf: 'Rack 7, Shelf A',
+    id: "b-2",
+    title: "Dune: The Masterwork Edition",
+    author: "Frank Herbert",
+    category: "Literature & Sci-Fi",
+    callNumber: "PS3558.E63 D8",
+    shelf: "Rack 7, Shelf A",
     availableCopies: 2,
     totalCopies: 5,
     rating: 4.8,
-    summary: 'An epic tale of politics, ecology, religion, and human endurance set upon the desert world of Arrakis.',
+    summary:
+      "An epic tale of politics, ecology, religion, and human endurance set upon the desert world of Arrakis.",
     aiTakeaways: [
-      'Explores the ecological interdependence between desert biomes and giant sandworms.',
-      'Critiques messianic hero figures and charismatic political leadership.',
-      'Rich exploration of spice melange as a geopolitical resource analog.'
+      "Explores the ecological interdependence between desert biomes and giant sandworms.",
+      "Critiques messianic hero figures and charismatic political leadership.",
+      "Rich exploration of spice melange as a geopolitical resource analog.",
     ],
   },
   {
-    id: 'b-3',
-    title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-    author: 'Robert C. Martin',
-    category: 'Software Engineering',
-    callNumber: 'QA76.76.C54 M3',
-    shelf: 'Rack 4, Shelf D',
+    id: "b-3",
+    title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+    author: "Robert C. Martin",
+    category: "Software Engineering",
+    callNumber: "QA76.76.C54 M3",
+    shelf: "Rack 4, Shelf D",
     availableCopies: 1,
     totalCopies: 3,
     rating: 4.7,
-    summary: 'A foundational handbook for writing robust, readable, and maintainable software with disciplined craftsmanship.',
+    summary:
+      "A foundational handbook for writing robust, readable, and maintainable software with disciplined craftsmanship.",
     aiTakeaways: [
-      'Emphasizes intention-revealing naming conventions and single-responsibility functions.',
-      'Actionable heuristics for unit test coverage and meaningful refactoring.',
-      'Techniques for eliminating side effects and defensive code clutter.'
+      "Emphasizes intention-revealing naming conventions and single-responsibility functions.",
+      "Actionable heuristics for unit test coverage and meaningful refactoring.",
+      "Techniques for eliminating side effects and defensive code clutter.",
     ],
   },
   {
-    id: 'b-4',
-    title: 'Thinking, Fast and Slow',
-    author: 'Daniel Kahneman',
-    category: 'Psychology & Economics',
-    callNumber: 'BF441 .K238',
-    shelf: 'Rack 2, Shelf C',
+    id: "b-4",
+    title: "Thinking, Fast and Slow",
+    author: "Daniel Kahneman",
+    category: "Psychology & Economics",
+    callNumber: "BF441 .K238",
+    shelf: "Rack 2, Shelf C",
     availableCopies: 4,
     totalCopies: 6,
     rating: 4.8,
-    summary: 'Nobel laureate Daniel Kahneman explains the two cognitive systems that drive the way we think and decide.',
+    summary:
+      "Nobel laureate Daniel Kahneman explains the two cognitive systems that drive the way we think and decide.",
     aiTakeaways: [
-      'Contrasts intuitive, emotional System 1 with deliberate, logical System 2.',
-      'Explains anchoring effects, availability heuristics, and loss aversion.',
-      'Examines overconfidence bias in professional forecasting and institutional planning.'
+      "Contrasts intuitive, emotional System 1 with deliberate, logical System 2.",
+      "Explains anchoring effects, availability heuristics, and loss aversion.",
+      "Examines overconfidence bias in professional forecasting and institutional planning.",
     ],
   },
 ];
 
 const POPULAR_SEARCH_CHIPS = [
-  'Data Systems',
-  'Frank Herbert',
-  'Artificial Intelligence',
-  'Cognitive Psychology',
-  'Software Architecture',
-  'Astrophysics',
+  "Data Systems",
+  "Frank Herbert",
+  "Artificial Intelligence",
+  "Cognitive Psychology",
+  "Software Architecture",
+  "Astrophysics",
 ];
 
 export default function HomePage() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBook, setSelectedBook] = useState<SpotlightBook>(FEATURED_BOOKS[0]);
-  const [activePersona, setActivePersona] = useState<'reader' | 'librarian'>('reader');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBook, setSelectedBook] = useState<SpotlightBook>(
+    FEATURED_BOOKS[0],
+  );
+  const [activePersona, setActivePersona] = useState<"reader" | "librarian">(
+    "reader",
+  );
 
   return (
     <div className="min-h-screen bg-[var(--neo-bg)] text-[var(--neo-text)] flex flex-col transition-colors selection:bg-[var(--neo-accent)]/20">
       {/* ── Top Soft Navigation ──────────────────────────────────── */}
-      <header className="sticky top-0 z-40 w-full bg-[var(--neo-card)]/90 backdrop-blur-md px-4 sm:px-8 h-16 flex items-center justify-between [box-shadow:var(--neo-raised-sm)] transition-colors">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-[var(--neo-r-sm)] overflow-hidden [box-shadow:var(--neo-raised-sm)] group-hover:scale-105 transition-transform shrink-0">
-            <Image
-              src="/nextgen_lms.webp"
-              alt="NextGen LMS Logo"
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-              priority
-            />
-          </div>
-          <div>
-            <span className="font-display font-bold text-base text-[var(--neo-text)] tracking-tight block">
-              NextGen LMS
-            </span>
-            <span className="text-[10px] font-semibold text-[var(--neo-text-3)] uppercase tracking-wider block">
-              Community Circulation &amp; Catalog
-            </span>
-          </div>
-        </Link>
-
-        {/* Center Links (Desktop) */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[var(--neo-text-2)]">
-          <Link href="/books" className="hover:text-[var(--neo-accent)] transition-colors">
-            Catalog
-          </Link>
-          <a href="#spotlight" className="hover:text-[var(--neo-accent)] transition-colors">
-            Featured Titles
-          </a>
-          <a href="#workflows" className="hover:text-[var(--neo-accent)] transition-colors">
-            How It Works
-          </a>
-          <a href="#community" className="hover:text-[var(--neo-accent)] transition-colors">
-            Community
-          </a>
-        </nav>
-
-        {/* Right Action Pod */}
-        <div className="flex items-center gap-3">
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Sign In
-            </Button>
-          </Link>
-          <Link href="/books">
-            <Button variant="primary" size="sm" rightIcon={<ArrowRight className="w-3.5 h-3.5" />}>
-              Explore Catalog
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* ── Hero Section (Soft Lighting, No Kickers, Live Functional Search) ────────────────── */}
       <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 px-4 sm:px-8">
@@ -186,7 +143,7 @@ export default function HomePage() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 70% 45% at 50% 0%, rgba(79, 70, 229, 0.07), transparent 70%)',
+              "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(79, 70, 229, 0.07), transparent 70%)",
           }}
           aria-hidden="true"
         />
@@ -199,7 +156,9 @@ export default function HomePage() {
 
           {/* Subheading */}
           <p className="text-base sm:text-lg text-[var(--neo-text-2)] max-w-2xl mx-auto leading-relaxed font-normal">
-            Search thousands of curated physical and digital titles, view intelligent AI chapter synopses, verify exact shelf call numbers, and manage loans in seconds.
+            Search thousands of curated physical and digital titles, view
+            intelligent AI chapter synopses, verify exact shelf call numbers,
+            and manage loans in seconds.
           </p>
 
           {/* Functional Search Console (Debossed Well + Soft Highlight on Focus) */}
@@ -208,7 +167,9 @@ export default function HomePage() {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (searchQuery.trim()) {
-                  router.push(`/books?q=${encodeURIComponent(searchQuery.trim())}`);
+                  router.push(
+                    `/books?q=${encodeURIComponent(searchQuery.trim())}`,
+                  );
                 }
               }}
               className="neo-card p-2 sm:p-2.5 [box-shadow:var(--neo-raised-lg)] flex flex-col sm:flex-row items-center gap-2"
@@ -240,7 +201,9 @@ export default function HomePage() {
 
             {/* Quick Query Recommendation Chips */}
             <div className="pt-3 flex items-center justify-center gap-1.5 flex-wrap">
-              <span className="text-[11px] font-semibold text-[var(--neo-text-3)] mr-1">Trending:</span>
+              <span className="text-[11px] font-semibold text-[var(--neo-text-3)] mr-1">
+                Trending:
+              </span>
               {POPULAR_SEARCH_CHIPS.map((chip) => (
                 <button
                   key={chip}
@@ -303,14 +266,18 @@ export default function HomePage() {
       </section>
 
       {/* ── Featured Titles & Interactive AI Preview ───────────────────── */}
-      <section id="spotlight" className="py-16 px-4 sm:px-8 bg-[var(--neo-surface)]/40 transition-colors">
+      <section
+        id="spotlight"
+        className="py-16 px-4 sm:px-8 bg-[var(--neo-surface)]/40 transition-colors"
+      >
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="text-left space-y-2 max-w-2xl">
             <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[var(--neo-text)] tracking-tight">
               Featured Titles on the Shelf Today
             </h2>
             <p className="text-sm text-[var(--neo-text-2)] leading-relaxed">
-              Real books available in circulation right now. Select any title to preview its AI chapter takeaways and physical shelf coordinates.
+              Real books available in circulation right now. Select any title to
+              preview its AI chapter takeaways and physical shelf coordinates.
             </p>
           </div>
 
@@ -325,8 +292,8 @@ export default function HomePage() {
                     onClick={() => setSelectedBook(book)}
                     className={`neo-card p-4 cursor-pointer transition-all ${
                       isSelected
-                        ? 'border border-[var(--neo-accent)]/30 [box-shadow:var(--neo-raised-lg)] bg-[var(--neo-card)]'
-                        : 'hover:[box-shadow:var(--neo-raised-sm)] opacity-85 hover:opacity-100'
+                        ? "border border-[var(--neo-accent)]/30 [box-shadow:var(--neo-raised-lg)] bg-[var(--neo-card)]"
+                        : "hover:[box-shadow:var(--neo-raised-sm)] opacity-85 hover:opacity-100"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -337,7 +304,9 @@ export default function HomePage() {
                         <h3 className="font-display text-base font-bold text-[var(--neo-text)] leading-snug mt-0.5">
                           {book.title}
                         </h3>
-                        <p className="text-xs text-[var(--neo-text-2)] mt-0.5">{book.author}</p>
+                        <p className="text-xs text-[var(--neo-text-2)] mt-0.5">
+                          {book.author}
+                        </p>
                       </div>
 
                       <div className="flex items-center gap-1 text-xs font-bold text-amber-500 shrink-0">
@@ -372,11 +341,15 @@ export default function HomePage() {
                     <h3 className="font-display text-xl sm:text-2xl font-extrabold text-[var(--neo-text)]">
                       {selectedBook.title}
                     </h3>
-                    <p className="text-sm font-medium text-[var(--neo-text-2)]">{selectedBook.author}</p>
+                    <p className="text-sm font-medium text-[var(--neo-text-2)]">
+                      {selectedBook.author}
+                    </p>
                   </div>
 
                   <div className="flex flex-col items-start sm:items-end gap-1">
-                    <span className="text-xs font-semibold text-[var(--neo-text-3)]">Classification</span>
+                    <span className="text-xs font-semibold text-[var(--neo-text-3)]">
+                      Classification
+                    </span>
                     <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-[var(--neo-r-sm)] bg-[var(--neo-inset-bg)] text-[var(--neo-text)] tabular-nums">
                       {selectedBook.callNumber}
                     </span>
@@ -420,13 +393,22 @@ export default function HomePage() {
                         Location: {selectedBook.shelf}
                       </p>
                       <p className="text-[11px] text-[var(--neo-text-3)]">
-                        {selectedBook.availableCopies} of {selectedBook.totalCopies} copies ready on shelf
+                        {selectedBook.availableCopies} of{" "}
+                        {selectedBook.totalCopies} copies ready on shelf
                       </p>
                     </div>
                   </div>
 
-                  <Link href={`/books?q=${encodeURIComponent(selectedBook.title)}`} className="w-full sm:w-auto">
-                    <Button variant="primary" size="md" className="w-full sm:w-auto" rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  <Link
+                    href={`/books?q=${encodeURIComponent(selectedBook.title)}`}
+                    className="w-full sm:w-auto"
+                  >
+                    <Button
+                      variant="primary"
+                      size="md"
+                      className="w-full sm:w-auto"
+                      rightIcon={<ArrowRight className="w-4 h-4" />}
+                    >
                       Borrow Title
                     </Button>
                   </Link>
@@ -445,7 +427,9 @@ export default function HomePage() {
               Engineered for curious readers and busy library teams
             </h2>
             <p className="text-sm sm:text-base text-[var(--neo-text-2)] leading-relaxed">
-              A single unified circulation system that eliminates overdue stress for readers while automating high-volume workflows for library staff.
+              A single unified circulation system that eliminates overdue stress
+              for readers while automating high-volume workflows for library
+              staff.
             </p>
           </div>
 
@@ -454,22 +438,22 @@ export default function HomePage() {
             <div className="neo-inset-well-sm p-1.5 flex items-center gap-2 rounded-[var(--neo-r-full)]">
               <button
                 type="button"
-                onClick={() => setActivePersona('reader')}
+                onClick={() => setActivePersona("reader")}
                 className={`px-5 py-2 rounded-[var(--neo-r-full)] text-xs font-bold transition-all ${
-                  activePersona === 'reader'
-                    ? 'bg-[var(--neo-card)] text-[var(--neo-accent)] [box-shadow:var(--neo-raised-sm)] border border-[var(--neo-accent)]/20'
-                    : 'text-[var(--neo-text-2)] hover:text-[var(--neo-text)]'
+                  activePersona === "reader"
+                    ? "bg-[var(--neo-card)] text-[var(--neo-accent)] [box-shadow:var(--neo-raised-sm)] border border-[var(--neo-accent)]/20"
+                    : "text-[var(--neo-text-2)] hover:text-[var(--neo-text)]"
                 }`}
               >
                 For Community Patrons
               </button>
               <button
                 type="button"
-                onClick={() => setActivePersona('librarian')}
+                onClick={() => setActivePersona("librarian")}
                 className={`px-5 py-2 rounded-[var(--neo-r-full)] text-xs font-bold transition-all ${
-                  activePersona === 'librarian'
-                    ? 'bg-[var(--neo-card)] text-[var(--neo-accent)] [box-shadow:var(--neo-raised-sm)] border border-[var(--neo-accent)]/20'
-                    : 'text-[var(--neo-text-2)] hover:text-[var(--neo-text)]'
+                  activePersona === "librarian"
+                    ? "bg-[var(--neo-card)] text-[var(--neo-accent)] [box-shadow:var(--neo-raised-sm)] border border-[var(--neo-accent)]/20"
+                    : "text-[var(--neo-text-2)] hover:text-[var(--neo-text)]"
                 }`}
               >
                 For Librarians & Staff
@@ -478,7 +462,7 @@ export default function HomePage() {
           </div>
 
           {/* Workflow Showcase Details */}
-          {activePersona === 'reader' ? (
+          {activePersona === "reader" ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="neo-card p-6 [box-shadow:var(--neo-raised)] space-y-3">
                 <div className="w-10 h-10 rounded-[var(--neo-r-sm)] bg-[var(--neo-surface)] text-[var(--neo-accent)] flex items-center justify-center [box-shadow:var(--neo-raised-sm)]">
@@ -488,7 +472,8 @@ export default function HomePage() {
                   Instant AI Chapter Summaries
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  Decide what to read in seconds. Every catalog title features concise chapter summaries and reader level assessments.
+                  Decide what to read in seconds. Every catalog title features
+                  concise chapter summaries and reader level assessments.
                 </p>
               </div>
 
@@ -500,7 +485,8 @@ export default function HomePage() {
                   One-Click Online Renewals
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  Renew books directly from your phone or laptop with zero phone calls or visits to the circulation desk.
+                  Renew books directly from your phone or laptop with zero phone
+                  calls or visits to the circulation desk.
                 </p>
               </div>
 
@@ -512,7 +498,8 @@ export default function HomePage() {
                   Digital Member Barcode
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  No physical card needed. Your profile provides an instant high-resolution barcode ready for kiosk or desk checkout.
+                  No physical card needed. Your profile provides an instant
+                  high-resolution barcode ready for kiosk or desk checkout.
                 </p>
               </div>
             </div>
@@ -526,7 +513,8 @@ export default function HomePage() {
                   Sub-Second Checkouts
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  Two-panel circulation workbench with live barcode entry, book condition logging, and auto-printed return receipts.
+                  Two-panel circulation workbench with live barcode entry, book
+                  condition logging, and auto-printed return receipts.
                 </p>
               </div>
 
@@ -538,7 +526,9 @@ export default function HomePage() {
                   Automated Reservation Queues
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  When a returned book is scanned, waitlisted patrons immediately receive SMS and email ready-for-pickup notifications.
+                  When a returned book is scanned, waitlisted patrons
+                  immediately receive SMS and email ready-for-pickup
+                  notifications.
                 </p>
               </div>
 
@@ -550,7 +540,8 @@ export default function HomePage() {
                   AI Shelf & Spine Auditing
                 </h3>
                 <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
-                  Capture a photo of library stacks; AI automatically extracts spine titles and flags misplaced books in real time.
+                  Capture a photo of library stacks; AI automatically extracts
+                  spine titles and flags misplaced books in real time.
                 </p>
               </div>
             </div>
@@ -559,7 +550,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Community Voice / Testimonial ─────────────────────────────── */}
-      <section id="community" className="py-16 px-4 sm:px-8 bg-[var(--neo-surface)]/50 transition-colors">
+      <section
+        id="community"
+        className="py-16 px-4 sm:px-8 bg-[var(--neo-surface)]/50 transition-colors"
+      >
         <div className="mx-auto max-w-4xl neo-card p-8 sm:p-12 [box-shadow:var(--neo-raised)] text-center space-y-6">
           <div className="flex justify-center text-amber-400 gap-1">
             {[...Array(5)].map((_, i) => (
@@ -568,7 +562,10 @@ export default function HomePage() {
           </div>
 
           <blockquote className="font-display text-lg sm:text-2xl font-bold text-[var(--neo-text)] leading-relaxed max-w-2xl mx-auto">
-            &ldquo;The AI chapter summaries save me hours of preliminary skimming, and seeing the exact physical rack location before visiting the branch makes finding research texts completely effortless.&rdquo;
+            &ldquo;The AI chapter summaries save me hours of preliminary
+            skimming, and seeing the exact physical rack location before
+            visiting the branch makes finding research texts completely
+            effortless.&rdquo;
           </blockquote>
 
           <div className="flex items-center justify-center gap-3 pt-2">
@@ -576,8 +573,12 @@ export default function HomePage() {
               ER
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold text-[var(--neo-text)]">Elena Rostova</p>
-              <p className="text-xs text-[var(--neo-text-3)]">PhD Candidate & Branch Patron</p>
+              <p className="text-sm font-bold text-[var(--neo-text)]">
+                Elena Rostova
+              </p>
+              <p className="text-xs text-[var(--neo-text-3)]">
+                PhD Candidate & Branch Patron
+              </p>
             </div>
           </div>
         </div>
@@ -589,7 +590,7 @@ export default function HomePage() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.06), transparent 60%)',
+              "radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.06), transparent 60%)",
           }}
           aria-hidden="true"
         />
@@ -599,11 +600,17 @@ export default function HomePage() {
             Your next favorite book is waiting on the shelf.
           </h2>
           <p className="text-base text-[var(--neo-text-2)] max-w-xl mx-auto leading-relaxed">
-            Join thousands of curious minds borrowing, reading, and learning every day. Browse the open catalog now or sign into your patron dashboard.
+            Join thousands of curious minds borrowing, reading, and learning
+            every day. Browse the open catalog now or sign into your patron
+            dashboard.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href="/books">
-              <Button variant="primary" size="lg" rightIcon={<ArrowRight className="w-4 h-4" />}>
+              <Button
+                variant="primary"
+                size="lg"
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+              >
                 Browse the Catalog
               </Button>
             </Link>

@@ -42,7 +42,7 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
           <DialogPrimitive.Content
             className={cn(
-              'relative w-full rounded-[var(--neo-r-xl)] bg-[var(--neo-card)] text-[var(--neo-text)] border border-[var(--neo-border-light)] [box-shadow:var(--neo-raised-lg)] p-6 duration-200 data-[state=open]:animate-slide-up data-[state=closed]:animate-out outline-none',
+              'relative w-full rounded-[var(--neo-r-xl)] bg-[var(--neo-card)] text-[var(--neo-text)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] [box-shadow:var(--neo-raised-lg)] p-6 duration-200 data-[state=open]:animate-slide-up data-[state=closed]:animate-out outline-none',
               maxWidthMap[maxWidth],
               className
             )}

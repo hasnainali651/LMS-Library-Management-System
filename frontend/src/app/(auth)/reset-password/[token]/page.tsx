@@ -59,10 +59,10 @@ export default function ResetPasswordPage() {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-white">
+        <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[var(--neo-text)]">
           Set New Password
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-[var(--neo-text-2)]">
           Create a secure new password for your City Library patron account
         </p>
       </div>
@@ -74,12 +74,12 @@ export default function ResetPasswordPage() {
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••••••"
             required
-            leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Lock className="w-4 h-4 text-[var(--neo-text-muted)]" />}
             rightIcon={
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-slate-400 hover:text-slate-200 transition-colors focus:outline-none"
+                className="text-[var(--neo-text-muted)] hover:text-[var(--neo-text)] transition-colors focus:outline-none"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
             type="password"
             placeholder="••••••••••••"
             required
-            leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Lock className="w-4 h-4 text-[var(--neo-text-muted)]" />}
             error={errors.confirmPassword?.message}
             {...register('confirmPassword')}
           />
@@ -115,9 +115,9 @@ export default function ResetPasswordPage() {
         </Button>
       </form>
 
-      <div className="text-center pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+      <div className="text-center pt-3 border-t border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] text-xs text-[var(--neo-text-2)]">
         Remembered your password?{' '}
-        <Link href="/login" className="font-semibold text-accent-400 hover:text-accent-300 hover:underline">
+        <Link href="/login" className="font-semibold text-[var(--neo-accent)] hover:underline">
           Return to Sign In
         </Link>
       </div>

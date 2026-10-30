@@ -23,6 +23,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate, isPending, cooldown, isCooldownActive } = useForgotPassword();
 
   const {
@@ -42,13 +43,17 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = (data: ForgotPasswordFormData) => {
+    setErrorMessage(null);
     mutate(
       { email: data.email },
       {
-        onSuccess: clearDraft,
-        onSettled: () => {
-          // Show success state regardless of email existence
+        onSuccess: () => {
+          clearDraft();
           setSubmittedEmail(data.email);
+        },
+        onError: (err: any) => {
+          const msg = err.response?.data?.message || err.message || 'No account found with this email address.';
+          setErrorMessage(msg);
         },
       }
     );
@@ -64,13 +69,19 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-white">
+        <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[var(--neo-text)]">
           Reset Your Password
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-[var(--neo-text-2)]">
           Enter your registered email address and we will dispatch recovery instructions
         </p>
       </div>
+
+      {errorMessage && (
+        <div className="p-3 rounded-[var(--neo-r-sm)] bg-rose-500/10 border border-rose-500/25 text-xs text-rose-600 dark:text-rose-400">
+          {errorMessage}
+        </div>
+      )}
 
       {submittedEmail ? (
         <motion.div
@@ -79,26 +90,26 @@ export default function ForgotPasswordPage() {
           transition={{ duration: 0.25 }}
           className="space-y-4 text-center py-2"
         >
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6" />
           </div>
 
           <div className="space-y-1">
-            <h3 className="font-display text-base font-bold text-white">
+            <h3 className="font-display text-base font-bold text-[var(--neo-text)]">
               Recovery Instructions Dispatched
             </h3>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              If an account with <strong className="text-white font-mono break-all">{submittedEmail}</strong> exists,
+            <p className="text-xs text-[var(--neo-text-2)] leading-relaxed">
+              If an account with <strong className="text-[var(--neo-text)] font-mono break-all">{submittedEmail}</strong> exists,
               we have sent a password reset link to it.
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs text-slate-400 text-left space-y-2">
+          <div className="p-3.5 rounded-xl bg-[var(--neo-inset-bg)] border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] text-xs text-[var(--neo-text-2)] text-left space-y-2">
             <p>
               Please check your spam or junk folder if the message does not arrive within a few minutes.
             </p>
             {isCooldownActive ? (
-              <p className="text-amber-400 font-medium">
+              <p className="text-amber-500 dark:text-amber-400 font-medium">
                 You can request another link in <strong>{cooldown}s</strong>.
               </p>
             ) : null}
@@ -128,9 +139,9 @@ export default function ForgotPasswordPage() {
             <Input
               label="Email Address"
               type="email"
-              placeholder="patron@citylibrary.org"
+              placeholder="ali.khan@nust.edu.pk"
               required
-              leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
+              leftIcon={<Mail className="w-4 h-4 text-[var(--neo-text-muted)]" />}
               error={errors.email?.message}
               {...register('email')}
             />
@@ -148,10 +159,10 @@ export default function ForgotPasswordPage() {
             {isCooldownActive ? `Wait ${cooldown}s to Resend` : 'Send Reset Link'}
           </Button>
 
-          <div className="text-center pt-3 border-t border-slate-800/80">
+          <div className="text-center pt-3 border-t border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)]">
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-[var(--neo-text-2)] hover:text-[var(--neo-text)] transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Sign In</span>

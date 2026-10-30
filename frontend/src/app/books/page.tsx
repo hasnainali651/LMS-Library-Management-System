@@ -9,6 +9,7 @@ import { api } from '@/lib/api';
 import { BookCard, BookItem } from '@/components/ui/BookCard';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Pagination } from '@/components/ui/Pagination';
 import { Modal } from '@/components/ui/Modal';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -130,11 +131,14 @@ export default function BooksPage() {
             </p>
           </div>
 
-          <Link href="/dashboard">
-            <Button variant="secondary" size="md" leftIcon={<BookOpen className="w-4 h-4" />}>
-              My Dashboard
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2.5">
+            <ThemeToggle />
+            <Link href="/dashboard">
+              <Button variant="secondary" size="md" leftIcon={<BookOpen className="w-4 h-4" />}>
+                My Dashboard
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Tactile Search & Category Filter Bar */}

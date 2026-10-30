@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   BookOpen,
   RotateCcw,
@@ -23,6 +24,7 @@ import { Button } from '@/components/ui/Button';
 import { StatCard } from '@/components/ui/StatCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ErrorState } from '@/components/ui/ErrorState';
 import { DueDateChip } from '@/components/circulation/DueDateChip';
 import { RenewModal, LoanRenewItem } from '@/components/circulation/RenewModal';
 import { Tooltip } from '@/components/ui/Tooltip';
@@ -50,13 +52,21 @@ export default function MyBooksPage() {
   const { user } = useAuthStore();
   const [loans, setLoans] = useState<PatronLoanItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'active' | 'overdue' | 'returned'>('active');
   const [renewingLoan, setRenewingLoan] = useState<LoanRenewItem | null>(null);
 
   // Fetch Member Loans
-  const fetchLoans = async () => {
+  const fetchLoans = useCallback(async () => {
     setLoading(true);
-    const userId = user?._id || 'mock-user-id';
+    setFetchError(null);
+    const userId = user?._id;
+
+    if (!userId) {
+      setLoans([]);
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await api.get(`/circulation/member/${userId}`);
@@ -89,72 +99,20 @@ export default function MyBooksPage() {
           };
         });
         setLoans(mapped);
+      } else {
+        setLoans([]);
       }
     } catch {
-      // Graceful realistic fallback
-      setLoans([
-        {
-          _id: 'l1',
-          title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-          author: 'Robert C. Martin',
-          coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=400&q=80',
-          issueDate: new Date(Date.now() - 9 * 86400000).toISOString(),
-          dueDate: new Date(Date.now() + 5 * 86400000).toISOString(),
-          status: 'active',
-          fine: 0,
-          renewalCount: 0,
-          maxRenewals: 2,
-          shelfLocation: 'CS-12-04',
-        },
-        {
-          _id: 'l2',
-          title: 'Designing Data-Intensive Applications',
-          author: 'Martin Kleppmann',
-          coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80',
-          issueDate: new Date(Date.now() - 12 * 86400000).toISOString(),
-          dueDate: new Date(Date.now() + 2 * 86400000).toISOString(),
-          status: 'active',
-          fine: 0,
-          renewalCount: 1,
-          maxRenewals: 2,
-          shelfLocation: 'SYS-04-11',
-        },
-        {
-          _id: 'l3',
-          title: 'Introduction to Algorithms (CLRS)',
-          author: 'Thomas H. Cormen',
-          coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80',
-          issueDate: new Date(Date.now() - 25 * 86400000).toISOString(),
-          dueDate: new Date(Date.now() - 4 * 86400000).toISOString(),
-          status: 'overdue',
-          fine: 20,
-          renewalCount: 2,
-          maxRenewals: 2,
-          shelfLocation: 'CS-01-08',
-        },
-        {
-          _id: 'l4',
-          title: 'To Kill a Mockingbird',
-          author: 'Harper Lee',
-          coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
-          issueDate: new Date(Date.now() - 60 * 86400000).toISOString(),
-          dueDate: new Date(Date.now() - 46 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 47 * 86400000).toISOString(),
-          status: 'returned',
-          fine: 0,
-          renewalCount: 0,
-          maxRenewals: 2,
-          shelfLocation: 'LIT-08-01',
-        },
-      ]);
+      setFetchError('Unable to load loan history from the circulation desk. Please try again.');
+      setLoans([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?._id]);
 
   useEffect(() => {
     fetchLoans();
-  }, [user?._id]);
+  }, [fetchLoans]);
 
   // Tab filtering
   const activeLoans = loans.filter((l) => l.status === 'active');
@@ -183,10 +141,13 @@ export default function MyBooksPage() {
           {/* Cover thumbnail */}
           <div className="w-10 h-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
             {loan.coverImage ? (
-              <img
+              <Image
                 src={loan.coverImage}
                 alt={loan.title}
+                width={40}
+                height={56}
                 className="w-full h-full object-cover"
+                unoptimized
               />
             ) : (
               <BookOpen className="w-4 h-4 text-slate-400" />
@@ -196,11 +157,11 @@ export default function MyBooksPage() {
             <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">
               {loan.title}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium truncate">
               by {loan.author}
             </p>
             {loan.shelfLocation && (
-              <span className="text-[10px] font-mono text-slate-400">
+              <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 font-medium">
                 Shelf: {loan.shelfLocation}
               </span>
             )}
@@ -213,7 +174,7 @@ export default function MyBooksPage() {
       header: 'Issue Date',
       sortable: true,
       render: (loan) => (
-        <span className="font-mono text-xs text-slate-600 dark:text-slate-300">
+        <span className="font-mono text-xs text-slate-700 dark:text-slate-300 font-medium">
           {format(parseISO(loan.issueDate), 'MMM d, yyyy')}
         </span>
       ),
@@ -226,10 +187,10 @@ export default function MyBooksPage() {
         if (loan.status === 'returned') {
           return (
             <div className="space-y-0.5">
-              <span className="font-mono text-xs text-slate-500">
+              <span className="font-mono text-xs text-slate-700 dark:text-slate-300 font-medium">
                 {format(parseISO(loan.dueDate), 'MMM d, yyyy')}
               </span>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+              <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">
                 Returned on {loan.returnDate ? format(parseISO(loan.returnDate), 'MMM d') : 'time'}
               </p>
             </div>
@@ -262,7 +223,7 @@ export default function MyBooksPage() {
       render: (loan) => (
         <span
           className={`font-mono text-xs font-semibold ${
-            loan.fine > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'
+            loan.fine > 0 ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'
           }`}
         >
           {loan.fine > 0 ? `PKR ${loan.fine.toFixed(2)}` : 'PKR 0.00'}
@@ -276,8 +237,8 @@ export default function MyBooksPage() {
       render: (loan) => {
         if (loan.status === 'returned') {
           return (
-            <span className="text-xs text-slate-400 flex items-center justify-end gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <span className="text-xs text-slate-700 dark:text-slate-300 font-medium flex items-center justify-end gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               Settled
             </span>
           );
@@ -447,9 +408,15 @@ export default function MyBooksPage() {
         </button>
       </div>
 
-      {/* Table Content with Skeleton Fallback & Stagger */}
+      {/* Table Content with Error & Skeleton Fallback */}
       {loading ? (
         <Skeleton variant="table" rows={4} cols={6} />
+      ) : fetchError ? (
+        <ErrorState
+          title="Could Not Load Loans"
+          message={fetchError}
+          onRetry={fetchLoans}
+        />
       ) : filteredLoans.length > 0 ? (
         <motion.div
           key={activeTab}

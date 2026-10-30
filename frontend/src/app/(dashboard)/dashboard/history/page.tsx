@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   BookOpen,
   Calendar,
@@ -24,6 +25,7 @@ import { StatCard } from '@/components/ui/StatCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ErrorState } from '@/components/ui/ErrorState';
 import { ReviewModal } from '@/components/circulation/ReviewModal';
 
 export interface PastLoanItem {
@@ -43,6 +45,7 @@ export default function LoanHistoryPage() {
   const { user } = useAuthStore();
   const [historyLoans, setHistoryLoans] = useState<PastLoanItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
@@ -57,9 +60,16 @@ export default function LoanHistoryPage() {
   } | null>(null);
 
   // Fetch past loans
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     setLoading(true);
-    const userId = user?._id || 'mock-user-id';
+    setFetchError(null);
+    const userId = user?._id;
+
+    if (!userId) {
+      setHistoryLoans([]);
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await api.get(`/circulation/member/${userId}`);
@@ -87,87 +97,20 @@ export default function LoanHistoryPage() {
             };
           });
         setHistoryLoans(returned);
+      } else {
+        setHistoryLoans([]);
       }
     } catch {
-      // Realistic fallback
-      setHistoryLoans([
-        {
-          _id: 'h1',
-          bookId: 'b-clean-code',
-          title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-          author: 'Robert C. Martin',
-          coverImage: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=400&q=80',
-          borrowDate: new Date(Date.now() - 45 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 31 * 86400000).toISOString(),
-          durationDays: 14,
-          reviewed: true,
-          userRating: 5,
-        },
-        {
-          _id: 'h2',
-          bookId: 'b-ddia',
-          title: 'Designing Data-Intensive Applications',
-          author: 'Martin Kleppmann',
-          coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80',
-          borrowDate: new Date(Date.now() - 90 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 69 * 86400000).toISOString(),
-          durationDays: 21,
-          reviewed: false,
-        },
-        {
-          _id: 'h3',
-          bookId: 'b-mockingbird',
-          title: 'To Kill a Mockingbird',
-          author: 'Harper Lee',
-          coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
-          borrowDate: new Date(Date.now() - 120 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 106 * 86400000).toISOString(),
-          durationDays: 14,
-          reviewed: false,
-        },
-        {
-          _id: 'h4',
-          bookId: 'b-pragmatic',
-          title: 'The Pragmatic Programmer: Your Journey to Mastery',
-          author: 'David Thomas, Andrew Hunt',
-          coverImage: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&q=80',
-          borrowDate: new Date(Date.now() - 150 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 138 * 86400000).toISOString(),
-          durationDays: 12,
-          reviewed: true,
-          userRating: 4,
-        },
-        {
-          _id: 'h5',
-          bookId: 'b-algo',
-          title: 'Introduction to Algorithms (CLRS)',
-          author: 'Thomas H. Cormen',
-          coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80',
-          borrowDate: new Date(Date.now() - 200 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 180 * 86400000).toISOString(),
-          durationDays: 20,
-          reviewed: false,
-        },
-        {
-          _id: 'h6',
-          bookId: 'b-refactor',
-          title: 'Refactoring: Improving the Design of Existing Code',
-          author: 'Martin Fowler',
-          coverImage: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&q=80',
-          borrowDate: new Date(Date.now() - 240 * 86400000).toISOString(),
-          returnDate: new Date(Date.now() - 226 * 86400000).toISOString(),
-          durationDays: 14,
-          reviewed: false,
-        },
-      ]);
+      setFetchError('Unable to load past borrowing history. Please try again.');
+      setHistoryLoans([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?._id]);
 
   useEffect(() => {
     fetchHistory();
-  }, [user?._id]);
+  }, [fetchHistory]);
 
   const handleOpenReview = (loan: PastLoanItem) => {
     setSelectedBookForReview({
@@ -287,6 +230,12 @@ export default function LoanHistoryPage() {
           <Skeleton variant="card" className="h-32" />
           <Skeleton variant="card" className="h-32" />
         </div>
+      ) : fetchError ? (
+        <ErrorState
+          title="Could Not Load History"
+          message={fetchError}
+          onRetry={fetchHistory}
+        />
       ) : paginatedLoans.length > 0 ? (
         <div className="space-y-3.5">
           {paginatedLoans.map((loan, idx) => (
@@ -303,11 +252,14 @@ export default function LoanHistoryPage() {
             >
               {/* Cover & Title Details */}
               <div className="flex items-start gap-4 flex-1 min-w-0">
-                <div className="w-14 h-20 rounded-xl bg-[var(--neo-inset-bg)] overflow-hidden shrink-0 border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] flex items-center justify-center shadow-[var(--neo-inset-sm)]">
+                <div className="w-14 h-20 rounded-xl bg-[var(--neo-inset-bg)] overflow-hidden shrink-0 border border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] flex items-center justify-center shadow-[var(--neo-inset-sm)] relative">
                   {loan.coverImage ? (
-                    <img
+                    <Image
                       src={loan.coverImage}
                       alt={loan.title}
+                      width={56}
+                      height={80}
+                      unoptimized
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -322,7 +274,7 @@ export default function LoanHistoryPage() {
                       Returned
                     </span>
 
-                    <span className="text-[11px] font-mono font-medium text-slate-500">
+                    <span className="text-[11px] font-mono font-medium text-slate-700 dark:text-slate-300">
                       Loan Duration: <strong>{loan.durationDays} days</strong>
                     </span>
                   </div>
@@ -330,17 +282,17 @@ export default function LoanHistoryPage() {
                   <h3 className="font-display font-bold text-base text-slate-900 dark:text-slate-100 truncate">
                     {loan.title}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 truncate">
                     by {loan.author}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-slate-400">
+                  <div className="flex flex-wrap items-center gap-3 pt-1 text-xs text-slate-600 dark:text-slate-400 font-medium">
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-400" />
+                      <Calendar className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                       Borrowed: {format(parseISO(loan.borrowDate), 'MMM d, yyyy')}
                     </span>
                     <span className="flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       Returned: {format(parseISO(loan.returnDate), 'MMM d, yyyy')}
                     </span>
                   </div>

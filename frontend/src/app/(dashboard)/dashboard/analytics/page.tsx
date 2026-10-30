@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 const CirculationTrendsChart = dynamic(
@@ -194,25 +195,6 @@ const AnalyticsStatCard: React.FC<AnalyticsStatCardProps> = ({
   );
 };
 
-// ─── Mock helpers (real API called first, fallback to mock) ───────────────────
-function generateCirculationMock(): CirculationPoint[] {
-  return Array.from({ length: 30 }, (_, i) => ({
-    date: format(subDays(new Date(), 29 - i), 'MMM d'),
-    issued: Math.floor(18 + Math.random() * 42),
-    returned: Math.floor(14 + Math.random() * 38),
-  }));
-}
-
-function generateFineMock(): FineMonthPoint[] {
-  const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
-  return months.map((month) => ({
-    month,
-    collected: Math.floor(800 + Math.random() * 900),
-    waived: Math.floor(80 + Math.random() * 180),
-    pending: Math.floor(200 + Math.random() * 400),
-  }));
-}
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AnalyticsPage() {
   const [metricsLoading, setMetricsLoading] = useState(true);
@@ -232,30 +214,21 @@ export default function AnalyticsPage() {
       const res = await api.get('/analytics/dashboard');
       const d = res.data?.data || res.data;
       setMetrics({
-        totalBooks: d.totalBooks ?? 4820,
-        totalBooksChange: d.totalBooksChange ?? 3.2,
-        activeMembers: d.activeMembers ?? 642,
-        activeMembersChange: d.activeMembersChange ?? 8.1,
-        issuedThisMonth: d.issuedThisMonth ?? 938,
-        issuedThisMonthChange: d.issuedThisMonthChange ?? 14.2,
-        finesCollectedThisMonth: d.finesCollectedThisMonth ?? 12480,
-        finesCollectedChange: d.finesCollectedChange ?? -2.5,
-        totalBooks_sparkline: d.totalBooks_sparkline ?? [44, 47, 46, 50, 49, 51, 53, 52, 55, 58, 57, 60],
-        activeMembers_sparkline: d.activeMembers_sparkline ?? [580, 590, 600, 595, 610, 620, 615, 630, 638, 640, 641, 642],
-        issued_sparkline: d.issued_sparkline ?? [750, 800, 810, 820, 870, 900, 880, 910, 920, 935, 940, 938],
-        fines_sparkline: d.fines_sparkline ?? [14000, 13500, 13800, 12900, 13200, 12800, 12600, 12300, 12000, 12400, 12500, 12480],
+        totalBooks: d.totalBooks ?? 0,
+        totalBooksChange: d.totalBooksChange ?? 0,
+        activeMembers: d.activeMembers ?? 0,
+        activeMembersChange: d.activeMembersChange ?? 0,
+        issuedThisMonth: d.issuedThisMonth ?? 0,
+        issuedThisMonthChange: d.issuedThisMonthChange ?? 0,
+        finesCollectedThisMonth: d.finesCollectedThisMonth ?? 0,
+        finesCollectedChange: d.finesCollectedChange ?? 0,
+        totalBooks_sparkline: d.totalBooks_sparkline ?? [],
+        activeMembers_sparkline: d.activeMembers_sparkline ?? [],
+        issued_sparkline: d.issued_sparkline ?? [],
+        fines_sparkline: d.fines_sparkline ?? [],
       });
     } catch {
-      setMetrics({
-        totalBooks: 4820, totalBooksChange: 3.2,
-        activeMembers: 642, activeMembersChange: 8.1,
-        issuedThisMonth: 938, issuedThisMonthChange: 14.2,
-        finesCollectedThisMonth: 12480, finesCollectedChange: -2.5,
-        totalBooks_sparkline: [44, 47, 46, 50, 49, 51, 53, 52, 55, 58, 57, 60],
-        activeMembers_sparkline: [580, 590, 600, 595, 610, 620, 615, 630, 638, 640, 641, 642],
-        issued_sparkline: [750, 800, 810, 820, 870, 900, 880, 910, 920, 935, 940, 938],
-        fines_sparkline: [14000, 13500, 13800, 12900, 13200, 12800, 12600, 12300, 12000, 12400, 12500, 12480],
-      });
+      setMetrics(null);
     } finally {
       setMetricsLoading(false);
     }
@@ -279,10 +252,10 @@ export default function AnalyticsPage() {
                 issued: p.issued ?? p.checkouts ?? 0,
                 returned: p.returned ?? p.returns ?? 0,
               }))
-            : generateCirculationMock()
+            : []
         );
       } else {
-        setCirculation(generateCirculationMock());
+        setCirculation([]);
       }
 
       if (catRes.status === 'fulfilled') {
@@ -293,43 +266,21 @@ export default function AnalyticsPage() {
                 .slice(0, 10)
                 .sort((a: any, b: any) => (b.count ?? b.borrows ?? 0) - (a.count ?? a.borrows ?? 0))
                 .map((c: any) => ({ category: c.category ?? c._id ?? 'Unknown', borrows: c.count ?? c.borrows ?? 0 }))
-            : [
-                { category: 'Computer Science', borrows: 480 },
-                { category: 'Fiction', borrows: 320 },
-                { category: 'Science', borrows: 260 },
-                { category: 'History', borrows: 210 },
-                { category: 'Mathematics', borrows: 195 },
-                { category: 'Philosophy', borrows: 140 },
-                { category: 'Psychology', borrows: 130 },
-                { category: 'Economics', borrows: 115 },
-                { category: 'Engineering', borrows: 100 },
-                { category: 'Literature', borrows: 90 },
-              ]
+            : []
         );
       } else {
-        setCategories([
-          { category: 'Computer Science', borrows: 480 },
-          { category: 'Fiction', borrows: 320 },
-          { category: 'Science', borrows: 260 },
-          { category: 'History', borrows: 210 },
-          { category: 'Mathematics', borrows: 195 },
-          { category: 'Philosophy', borrows: 140 },
-          { category: 'Psychology', borrows: 130 },
-          { category: 'Economics', borrows: 115 },
-          { category: 'Engineering', borrows: 100 },
-          { category: 'Literature', borrows: 90 },
-        ]);
+        setCategories([]);
       }
 
       if (fineRes.status === 'fulfilled') {
         const raw = fineRes.value.data?.data || fineRes.value.data;
-        setFinesSummary(Array.isArray(raw) ? raw : generateFineMock());
+        setFinesSummary(Array.isArray(raw) ? raw : []);
       } else {
-        setFinesSummary(generateFineMock());
+        setFinesSummary([]);
       }
     } catch {
-      setCirculation(generateCirculationMock());
-      setFinesSummary(generateFineMock());
+      setCirculation([]);
+      setFinesSummary([]);
     } finally {
       setChartsLoading(false);
     }
@@ -352,27 +303,14 @@ export default function AnalyticsPage() {
               totalBorrows: b.totalBorrows ?? b.allTimeBorrows ?? 0,
               rating: b.rating,
             }))
-          : mockPopularBooks
+          : []
       );
     } catch {
-      setPopularBooks(mockPopularBooks);
+      setPopularBooks([]);
     } finally {
       setBooksLoading(false);
     }
   };
-
-  const mockPopularBooks: PopularBook[] = [
-    { rank: 1, _id: 'b1', title: 'Clean Code', authors: ['Robert C. Martin'], thisMonthBorrows: 38, totalBorrows: 412, rating: 4.8 },
-    { rank: 2, _id: 'b2', title: 'The Pragmatic Programmer', authors: ['David Thomas', 'Andrew Hunt'], thisMonthBorrows: 31, totalBorrows: 388 },
-    { rank: 3, _id: 'b3', title: 'Design Patterns', authors: ['Gang of Four'], thisMonthBorrows: 29, totalBorrows: 360, rating: 4.6 },
-    { rank: 4, _id: 'b4', title: 'Introduction to Algorithms', authors: ['CLRS'], thisMonthBorrows: 27, totalBorrows: 342, rating: 4.5 },
-    { rank: 5, _id: 'b5', title: 'Atomic Habits', authors: ['James Clear'], thisMonthBorrows: 25, totalBorrows: 310, rating: 4.9 },
-    { rank: 6, _id: 'b6', title: 'Deep Work', authors: ['Cal Newport'], thisMonthBorrows: 22, totalBorrows: 280 },
-    { rank: 7, _id: 'b7', title: 'The Psychology of Money', authors: ['Morgan Housel'], thisMonthBorrows: 20, totalBorrows: 255, rating: 4.7 },
-    { rank: 8, _id: 'b8', title: 'Sapiens', authors: ['Yuval Noah Harari'], thisMonthBorrows: 18, totalBorrows: 240, rating: 4.4 },
-    { rank: 9, _id: 'b9', title: 'AI: A Modern Approach', authors: ['Stuart Russell'], thisMonthBorrows: 16, totalBorrows: 215 },
-    { rank: 10, _id: 'b10', title: 'Dune', authors: ['Frank Herbert'], thisMonthBorrows: 14, totalBorrows: 198, rating: 4.8 },
-  ];
 
   const handleRefresh = () => {
     setLastRefreshed(new Date());
@@ -382,9 +320,99 @@ export default function AnalyticsPage() {
   };
 
   useEffect(() => {
-    fetchMetrics();
-    fetchCharts();
-    fetchPopularBooks();
+    let active = true;
+    const load = async () => {
+      try {
+        const [dashRes, circRes, catRes, fineRes, popularRes] = await Promise.allSettled([
+          api.get('/analytics/dashboard'),
+          api.get('/analytics/circulation/trends'),
+          api.get('/analytics/categories/demand'),
+          api.get('/analytics/fines/summary'),
+          api.get('/analytics/books/popular'),
+        ]);
+
+        if (!active) return;
+
+        if (dashRes.status === 'fulfilled') {
+          const d = dashRes.value.data?.data || dashRes.value.data;
+          setMetrics({
+            totalBooks: d.totalBooks ?? 0,
+            totalBooksChange: d.totalBooksChange ?? 0,
+            activeMembers: d.activeMembers ?? 0,
+            activeMembersChange: d.activeMembersChange ?? 0,
+            issuedThisMonth: d.issuedThisMonth ?? 0,
+            issuedThisMonthChange: d.issuedThisMonthChange ?? 0,
+            finesCollectedThisMonth: d.finesCollectedThisMonth ?? 0,
+            finesCollectedChange: d.finesCollectedChange ?? 0,
+            totalBooks_sparkline: d.totalBooks_sparkline ?? [],
+            activeMembers_sparkline: d.activeMembers_sparkline ?? [],
+            issued_sparkline: d.issued_sparkline ?? [],
+            fines_sparkline: d.fines_sparkline ?? [],
+          });
+        }
+        setMetricsLoading(false);
+
+        if (circRes.status === 'fulfilled') {
+          const raw = circRes.value.data?.data || circRes.value.data;
+          setCirculation(
+            Array.isArray(raw)
+              ? raw.map((p: any) => ({
+                  date: p.date ? format(parseISO(p.date), 'MMM d') : p.label,
+                  issued: p.issued ?? p.checkouts ?? 0,
+                  returned: p.returned ?? p.returns ?? 0,
+                }))
+              : []
+          );
+        }
+
+        if (catRes.status === 'fulfilled') {
+          const raw = catRes.value.data?.data || catRes.value.data;
+          setCategories(
+            Array.isArray(raw)
+              ? raw
+                  .slice(0, 10)
+                  .sort((a: any, b: any) => (b.count ?? b.borrows ?? 0) - (a.count ?? a.borrows ?? 0))
+                  .map((c: any) => ({ category: c.category ?? c._id ?? 'Unknown', borrows: c.count ?? c.borrows ?? 0 }))
+              : []
+          );
+        }
+
+        if (fineRes.status === 'fulfilled') {
+          const raw = fineRes.value.data?.data || fineRes.value.data;
+          setFinesSummary(Array.isArray(raw) ? raw : []);
+        }
+        setChartsLoading(false);
+
+        if (popularRes.status === 'fulfilled') {
+          const raw = popularRes.value.data?.data || popularRes.value.data;
+          setPopularBooks(
+            Array.isArray(raw)
+              ? raw.slice(0, 10).map((b: any, i: number) => ({
+                  rank: i + 1,
+                  _id: b._id,
+                  title: b.title ?? b.book?.title ?? 'Untitled',
+                  authors: b.authors ?? b.book?.authors ?? [],
+                  coverImage: b.coverImage ?? b.book?.coverImage,
+                  thisMonthBorrows: b.thisMonthBorrows ?? b.monthBorrows ?? b.borrows ?? 0,
+                  totalBorrows: b.totalBorrows ?? b.allTimeBorrows ?? 0,
+                  rating: b.rating,
+                }))
+              : []
+          );
+        }
+        setBooksLoading(false);
+      } catch {
+        if (active) {
+          setMetricsLoading(false);
+          setChartsLoading(false);
+          setBooksLoading(false);
+        }
+      }
+    };
+    load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const authorStr = (a: string[] | string) =>
@@ -398,7 +426,7 @@ export default function AnalyticsPage() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Analytics Dashboard
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
             Last refreshed at {format(lastRefreshed, 'h:mm a')} · Real-time library intelligence
           </p>
         </div>
@@ -463,7 +491,7 @@ export default function AnalyticsPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Circulation Trends — Last 30 Days</CardTitle>
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+            <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400 font-medium">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
                 Issued
@@ -505,7 +533,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Fine Collection — Last 6 Months</CardTitle>
-              <div className="flex items-center gap-3 text-xs text-slate-500">
+              <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400 font-medium">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-emerald-500" />Collected</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-amber-400" />Waived</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-rose-400" />Pending</span>
@@ -546,11 +574,11 @@ export default function AnalyticsPage() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 dark:border-slate-800">
-                    <th className="px-5 py-3 text-left font-semibold text-slate-400 uppercase tracking-wider w-10">#</th>
-                    <th className="px-5 py-3 text-left font-semibold text-slate-400 uppercase tracking-wider">Title</th>
-                    <th className="px-5 py-3 text-right font-semibold text-slate-400 uppercase tracking-wider">This Month</th>
-                    <th className="px-5 py-3 text-right font-semibold text-slate-400 uppercase tracking-wider">All-Time</th>
-                    <th className="px-5 py-3 text-right font-semibold text-slate-400 uppercase tracking-wider">Rating</th>
+                    <th className="px-5 py-3 text-left font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider w-10">#</th>
+                    <th className="px-5 py-3 text-left font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Title</th>
+                    <th className="px-5 py-3 text-right font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">This Month</th>
+                    <th className="px-5 py-3 text-right font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">All-Time</th>
+                    <th className="px-5 py-3 text-right font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Rating</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -567,7 +595,7 @@ export default function AnalyticsPage() {
                           idx === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' :
                           idx === 1 ? 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300' :
                           idx === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400' :
-                          'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                          'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                         }`}>
                           {book.rank}
                         </span>
@@ -575,19 +603,22 @@ export default function AnalyticsPage() {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           {book.coverImage ? (
-                            <img
+                            <Image
                               src={book.coverImage}
-                              alt=""
+                              alt={book.title || 'Book cover'}
+                              width={32}
+                              height={40}
+                              unoptimized
                               className="w-8 h-10 object-cover rounded shadow-sm shrink-0"
                             />
                           ) : (
                             <div className="w-8 h-10 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                              <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+                              <BookOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                             </div>
                           )}
                           <div className="min-w-0">
                             <p className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[220px]">{book.title}</p>
-                            <p className="text-slate-400 truncate max-w-[200px] mt-0.5">{authorStr(book.authors)}</p>
+                            <p className="text-slate-600 dark:text-slate-400 font-medium truncate max-w-[200px] mt-0.5">{authorStr(book.authors)}</p>
                           </div>
                         </div>
                       </td>

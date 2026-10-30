@@ -80,7 +80,7 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       {/* Desktop Sidebar Rail */}
-      <aside className="hidden md:flex flex-col w-64 shrink-0 bg-[var(--neo-card)] [box-shadow:var(--neo-raised-sm)] min-h-screen sticky top-0 h-screen select-none z-20 transition-colors">
+      <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-64 bg-[var(--neo-card)] [box-shadow:var(--neo-raised-sm)] h-screen select-none z-20 transition-colors">
         {/* Brand Header */}
         <div className="p-6 border-b border-[var(--neo-shadow-dark)]/15 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3 group">
@@ -133,7 +133,7 @@ export const Sidebar: React.FC = () => {
       </aside>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--neo-card)]/95 backdrop-blur-lg border-t border-[var(--neo-border-light)] [box-shadow:var(--neo-raised-lg)] px-2 py-1.5 flex items-center justify-around">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--neo-card)]/95 backdrop-blur-lg border-t border-[var(--neo-border-light)] dark:border-[var(--neo-border-dark)] [box-shadow:var(--neo-raised-lg)] px-2 py-1.5 flex items-center justify-around">
         {navItems.slice(0, 5).map((item) => {
           const Icon = item.icon;
           const active = isLinkActive(item.href);

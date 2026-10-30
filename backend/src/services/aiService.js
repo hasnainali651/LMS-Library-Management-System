@@ -20,8 +20,12 @@ const getGenAI = () => {
   return _genAI;
 };
 
+// Exposed only for Jest test isolation — do NOT call in production code.
+/* istanbul ignore next */
+const _resetForTesting = () => { _genAI = null; };
+
 const providerError = (error) => {
-  if (error instanceof ApiError) return error;
+  if (error instanceof ApiError || error?.name === 'ApiError' || error?.statusCode) return error;
   const status = Number(error.status || error.statusCode);
   if (status === 429)
     return new ApiError(503, "Gemini quota or rate limit exceeded");
@@ -409,4 +413,6 @@ module.exports = {
   generateStructured,
   getGenAI,
   providerError,
+  // Test-only — resets the lazy singleton so jest.mock() takes effect
+  _resetForTesting,
 };

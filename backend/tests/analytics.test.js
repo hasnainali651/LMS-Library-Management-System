@@ -39,6 +39,7 @@ describe('Analytics API Test Suite (/api/v1/analytics)', () => {
     email: 'librarian@library.com',
     role: 'librarian',
     isActive: true,
+    isStaffApproved: true,
   };
 
   const studentUser = {

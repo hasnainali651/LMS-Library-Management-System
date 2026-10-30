@@ -140,7 +140,7 @@ const notificationService = {
     { $group: { _id: '$delivery.status', count: { $sum: 1 } } },
   ]),
 
-  queueEmail: async ({ userId, subject, html, dedupeKey, cc = [], meta = {}, type = 'account', title, message }, options = {}) => {
+  queueEmail: async ({ userId, subject, html, dedupKey, cc = [], meta = {}, type = 'account', title, message }, options = {}) => {
     if (!subject || typeof html !== 'string') throw new ApiError(400, 'Email subject and HTML are required');
     return notificationService.createNotification({
       userId,
